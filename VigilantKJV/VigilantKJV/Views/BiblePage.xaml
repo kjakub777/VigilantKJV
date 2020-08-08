@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:VigilantKJV.Models"
+             mc:Ignorable="d"
+             x:Class="VigilantKJV.Views.BiblePage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add new"
+                     Icon="ic_add.png"
+                     Command="{Binding AddTeamCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <Picker Title="pickerTestament" SelectedItem="{Binding Testament}"  >
+
+                <Picker.Items>
+                    <x:String>Old</x:String>
+                    <x:String>New</x:String>
+                    <x:String>Both</x:String>
+                </Picker.Items>
+            </Picker>
+                <Picker Title="pickerBook" ItemsSource="{Binding  Books}" SelectedItem="{Binding Book}" />
+            <Picker Title="pickerChapter" ItemsSource="{Binding  .Book.Chapters}" SelectedItem="{Binding Chapter}" /> 
+        <ListView ItemsSource="{Binding .Chapter.Verses}"
+                  HasUnevenRows="True"
+                  ItemTapped="OnTeamTapped"
+                  BackgroundColor="#f5f5f5"
+                  RefreshCommand="{Binding LoadItemsCommand}"
+                  IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+
+                        <Grid BackgroundColor="White"
+                              Margin="4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+
+                            <Label Grid.Row="0"
+                                   Text="{Binding FullTitle}"
+                                   FontSize="Medium"
+                                   Margin="4"
+                                   FontAttributes="Bold" />
+
+                            <StackLayout Orientation="Horizontal"
+                                         Grid.Row="1"
+                                         Margin="4"
+                                         Padding="2">
+
+                                <Label Text="{Binding Text}"
+                                       FontSize="Small" />
+
+                                <Label Text="Days since recited? "
+                                       FontSize="Small" />
+                            </StackLayout>
+                        </Grid>
+
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

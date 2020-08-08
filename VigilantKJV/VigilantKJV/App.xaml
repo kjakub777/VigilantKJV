@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="VigilantKJV.App">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <!--Global Styles-->
+            <Color x:Key="NavigationPrimary">#607231</Color>
+            <Color x:Key="NavigationText">#607231</Color>
+            <Color x:Key="Picker_Title">#151909</Color>
+            <Color x:Key="Picker_Background">#EEE3C4</Color>
+            <Color x:Key="Label_VerseBackground">#B7B2A4</Color>
+            <Color x:Key="Label_VerseText">#2E311C</Color>
+            <Color x:Key="StackLayout_Background">#2E311C</Color>
+            <Color x:Key="Label_HeaderBackground">#151909</Color>
+            <Color x:Key="Label_HeaderText">#B7B2A4</Color>
+            <Color x:Key="Page_Background">#41494F</Color>
+            <Color x:Key="ProgressAndHighlightColor">LightGreen</Color>
+            <Color x:Key="Button_RecitedBackground">#849D43</Color>
+            <Color x:Key="Boxview_VerseBackground">#849D43</Color>
+
+            <Style TargetType="NavigationPage">
+                <Setter Property="HeightRequest" Value="75"></Setter>
+                <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationPrimary}" />
+                <Setter Property="BarTextColor" Value="{StaticResource NavigationText}" />
+            </Style>
+            <Style x:Key="PickerStyle" TargetType="Picker">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="Margin"   Value="1,10,1,10" />
+                <Setter Property="HeightRequest" Value="75" />
+                <Setter Property="TitleColor" Value="{StaticResource Picker_Title}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Picker_Background}" />
+                <Setter Property="HorizontalOptions" Value="Fill" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="Margin" Value="0,2,0,0" />
+            </Style>
+            <!--stack layout back 676151-->
+            <Style x:Key="StackLayoutStyle" TargetType="StackLayout">
+                <Setter Property="BackgroundColor" Value="{StaticResource StackLayout_Background}" />
+            </Style>
+            <Style x:Key="Label_VerseStyle" TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="FontFamily" Value="Comic Sans MS" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Label_VerseBackground}" />
+                <Setter Property="TextColor" Value="{StaticResource Label_VerseText}" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="VerticalOptions" Value="FillAndExpand" />
+            </Style>
+            <Style x:Key="Label_LastRecitedStyle" TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="FontFamily" Value="Comic Sans MS" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Label_VerseBackground}" />
+                <Setter Property="TextColor" Value="{StaticResource Label_VerseText}" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="VerticalOptions" Value="FillAndExpand" />
+                <Setter Property="Margin" Value="3,7,3,7" />
+            </Style>
+            <Style x:Key="Label_HeaderStyle" TargetType="Label">
+                <Setter Property="BackgroundColor" Value="{StaticResource Label_HeaderBackground}" />
+                <Setter Property="Padding" Value="5,5,5,5" />
+                <Setter Property="TextColor" Value="{StaticResource Label_HeaderText}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontFamily" Value="Comic Sans MS" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="VerticalOptions" Value="FillAndExpand" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+    
+</Application>

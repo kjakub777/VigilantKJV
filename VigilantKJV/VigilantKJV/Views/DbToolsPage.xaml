@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="VigilantKJV.Views.DbToolsPage"
+    Title="{Binding Title}">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label HorizontalOptions="CenterAndExpand" Text="Path to export to."></Label>
+            <Entry HorizontalOptions="FillAndExpand"  Text="{Binding ExportPath}" Placeholder="/storage/9C33-6BBD/temp/" x:Name="EntryExp" ></Entry>
+            <!--TextChanged="EntryExp_TextChanged"-->
+            <StackLayout Orientation="Horizontal">
+                <Button HorizontalOptions="FillAndExpand" Text="Export DB to file" Clicked="ExportDB_Clicked"></Button>
+                <Label Text="FTP?"  HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                <CheckBox x:Name="cbFtp"  HorizontalOptions="CenterAndExpand" IsChecked="{Binding UpFtp}" ></CheckBox>
+                <!--CheckedChanged="cbFtp_CheckedChanged"-->
+            </StackLayout>
+            <Label Text="Path to import from."  HorizontalOptions="CenterAndExpand"></Label>
+            <!--TextChanged="EntryImp_TextChanged"-->
+            <!--Text="{x:Binding Path=viewmodel.ImportPath,Mode=TwoWay,UpdateSourceEventName=SetImportPath}"-->
+            <Entry   HorizontalOptions="FillAndExpand" Text="{Binding ImportPath}" Placeholder="/storage/9C33-6BBD/temp/db.txt"  x:Name="EntryImp" ></Entry>
+            <Button Text="Import DB from file" Clicked="ImportDB_Clicked"></Button>
+            <Button Text="Import DB from original CSV" Clicked="ImportDBOrig_Clicked"></Button>
+            <Button Text="Clear DB" Clicked="ClearDB_Clicked"></Button>
+            <ProgressBar x:Name="pbar"  ProgressColor="{StaticResource ProgressAndHighlightColor}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
