@@ -7,14 +7,8 @@ using Microsoft.EntityFrameworkCore.Sqlite;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VigilantKJV.Models
-{    public enum Testament
-    {
-        Old,
-        New,
-        Both
-    }
-
-;
+{    
+ public enum Testament { Old,New,Both}
     public class Bible
     {
         public Bible()

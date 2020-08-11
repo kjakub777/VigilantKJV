@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="VigilantKJV.Views.MemorizedPage">
+
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout x:Name="bookStack" Padding="1,0,1,0">
+                <ListView
+                    x:Name="BooksList"
+                    BackgroundColor="#EEE3C4"
+                    HasUnevenRows="true"
+                    IsGroupingEnabled="True"
+                    IsPullToRefreshEnabled="true"
+                    IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                    ItemsSource="{Binding Items}"
+                    RefreshCommand="{Binding LoadBooksCommand}"
+                    SizeChanged="ListView_OnSizeChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Frame Padding="1,0" SizeChanged="VisualElement_OnSizeChanged">
+                                    <StackLayout
+                                        BackgroundColor="{StaticResource Page_Background}"
+                                        Padding="1"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            Text="{Binding .Verse.FullTitle}"
+                                            Style="{StaticResource Label_HeaderStyle}"   />
+                                        <Label                                        
+                                            LineBreakMode="WordWrap"
+                                            Style="{StaticResource Label_VerseStyle}"
+                                            Text="{Binding .Verse.Text}" />
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label    
+                                                Style="{StaticResource Label_LastRecitedStyle}"
+                                           Text="{Binding sLastRecited}" />
+                                            <Button
+                                                BackgroundColor="{StaticResource Button_RecitedBackground}"
+                                                Clicked="Button_Clicked"
+                                                HorizontalOptions="FillAndExpand"
+                                                Text="Recited!" />
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Frame>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.GroupHeaderTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid  >
+                                    <Label
+                                       Style="{StaticResource Label_HeaderStyle}"
+                                        Text="{Binding Name}  {Binding Items.Count, StringFormat='Total verses: {0:D}'}"                                       
+                                       />
+                                    <Image
+                                        x:Name="ImgA"
+                                        Margin="0,0,5,0"
+                                        HeightRequest="32"
+                                        HorizontalOptions="End"
+                                        Source="{Binding StateIcon}"
+                                        WidthRequest="32" />
+                                    <Grid.GestureRecognizers>
+                                        <!--<TapGestureRecognizer Command="{Binding Source={x:Reference currentPage}, Path=BindingContext.RefreshItemsCommand}"  NumberOfTapsRequired="1" CommandParameter="{Binding .}"/>-->
+                                        <TapGestureRecognizer
+                                            Command="{Binding BindingContext.RefreshItemsCommand, Source={x:Reference BooksList}}"
+                                            CommandParameter="{Binding .}"
+                                            NumberOfTapsRequired="1" />
+                                        <!--<TapGestureRecognizer Command="{Binding Source={x:Reference currentPage}, Path=BindingContext.RefreshItemsCommand}"  NumberOfTapsRequired="1" CommandParameter="{Binding .}"/>-->
+                                    </Grid.GestureRecognizers>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.GroupHeaderTemplate>
+                </ListView>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+
+</ContentPage>

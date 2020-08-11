@@ -9,7 +9,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <!--Global Styles-->
-            <Color x:Key="NavigationPrimary">#607231</Color>
+            <!--<Color x:Key="NavigationPrimary">#607231</Color>
             <Color x:Key="NavigationText">#607231</Color>
             <Color x:Key="Picker_Title">#151909</Color>
             <Color x:Key="Picker_Background">#EEE3C4</Color>
@@ -21,8 +21,26 @@
             <Color x:Key="Page_Background">#41494F</Color>
             <Color x:Key="ProgressAndHighlightColor">LightGreen</Color>
             <Color x:Key="Button_RecitedBackground">#849D43</Color>
-            <Color x:Key="Boxview_VerseBackground">#849D43</Color>
-
+            <Color x:Key="Boxview_VerseBackground">#849D43</Color><Viewbox>
+  <Canvas Width="327" Height="111">
+    <TextBlock Text="1B262c" FontFamily="Calibri" FontSize="92" Foreground="#FF000000" Canvas.Left="0" Canvas.Top="-0.596666666666678" />
+    <TextBlock Text=" " FontFamily="Calibri" FontSize="92" Foreground="#FF000000" Canvas.Left="274" Canvas.Top="-0.596666666666678" />
+  </Canvas>
+</Viewbox>
+-->
+            <Color x:Key="NavigationPrimary">#48585D</Color>
+            <Color x:Key="NavigationText">#eaead7</Color>
+            <Color x:Key="Picker_Title">#FCFAEE</Color>
+            <Color x:Key="Picker_Background">#EEE3C4</Color>
+            <Color x:Key="Label_VerseBackground">#d2d4c3</Color>
+            <Color x:Key="Label_VerseText">#2c373a</Color>
+            <Color x:Key="StackLayout_Background">#48585D</Color>
+            <Color x:Key="Label_HeaderBackground">#2c373a</Color>
+            <Color x:Key="Label_HeaderText">#faf7e0</Color>
+            <Color x:Key="Page_Background">#48585D</Color>
+            <Color x:Key="ProgressAndHighlightColor">LightGreen</Color>
+            <Color x:Key="Button_RecitedBackground">#b7b695</Color>
+            <Color x:Key="Boxview_VerseBackground">#3E483C</Color> 
             <Style TargetType="NavigationPage">
                 <Setter Property="HeightRequest" Value="75"></Setter>
                 <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationPrimary}" />

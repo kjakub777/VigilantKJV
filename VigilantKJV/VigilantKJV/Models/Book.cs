@@ -21,14 +21,21 @@ namespace VigilantKJV.Models
          
         public ICollection<Chapter> Chapters { get; set; }
  
+      //  [EnumDataType(typeof(Testament))]
         [Required]
-        public Testament Testament { get; set; }
+        public string Testament { get; set; }
 
         public string Name { get; set; }
-          
+       
         public int Ordinal { get; set; }
  
         public string Information { get; set; }
+        public override string ToString()
+        {
+            return $"{Name}";
+        }
+
+
     }
 
 }

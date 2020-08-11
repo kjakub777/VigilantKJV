@@ -53,8 +53,8 @@ namespace Migrator.Migrations
                     b.Property<int>("Ordinal")
                         .HasColumnType("int");
 
-                    b.Property<int>("Testament")
-                        .HasColumnType("int");
+                    b.Property<string>("Testament")
+                        .HasColumnType("string");
 
                     b.HasKey("Id");
 

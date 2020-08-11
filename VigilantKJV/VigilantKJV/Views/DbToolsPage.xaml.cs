@@ -28,16 +28,19 @@ namespace VigilantKJV.Views
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
+                    lblpbar.Text = $"{(((dval / (double)uimax) )* 100).ToString("#.0")}%   {dval} of {uimax} ";
                     pbar.Progress = dval / (double)uimax;
                     pbar.IsVisible = pbar.Progress != 0d && pbar.Progress < .999d;
+                    lblpbar.IsVisible = pbar.IsVisible;
                 });
             });
         }
 
-        private void ExportDB_Clicked(object sender, EventArgs e)
+        private async void ExportDB_Clicked(object sender, EventArgs e)
         {
-
+            await viewmodel.ExportDb(animatePbar);
         }
+
 
         private async void ImportDB_Clicked(object sender, EventArgs e)
         {
@@ -49,9 +52,15 @@ namespace VigilantKJV.Views
             await viewmodel.ImportDbFromCsv(animatePbar);
         }
 
-        private void ClearDB_Clicked(object sender, EventArgs e)
+        private async void ClearDB_Clicked(object sender, EventArgs e)
         {
-
+            await viewmodel.ClearDb();
         }
+
+        private async void btnSql_Clicked(object sender, EventArgs e)
+        {
+            await viewmodel.ExecuteSql(animatePbar);
+        }
+
     }
 }

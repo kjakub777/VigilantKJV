@@ -7,18 +7,39 @@ using Xamarin.Forms;
 
 using VigilantKJV.Models;
 using VigilantKJV.Services;
+using Acr.UserDialogs;
 
 namespace VigilantKJV.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
+        public DataAccess.DataStore DBAccess;
+
+        public BaseViewModel()
+        {
+            DBAccess = new DataAccess.DataStore();
+        }
 
         bool isBusy = false;
         public bool IsBusy
         {
             get { return isBusy; }
             set { SetProperty(ref isBusy, value); }
+        }
+        bool isEmpty = false;
+        public bool IsEmpty
+        {
+            get { return isEmpty; }
+            set
+            {
+                isEmpty = value;
+                OnEmptyChanged(this, new PropertyChangedEventArgs("IsEmpty"));
+            }
+        }
+
+        private void OnEmptyChanged(BaseViewModel baseViewModel, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            UserDialogs.Instance.Toast("No Data Found");
         }
 
         string title = string.Empty;

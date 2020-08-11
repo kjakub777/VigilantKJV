@@ -20,7 +20,9 @@ namespace VigilantKJV.Models
 
          
         public ICollection<Chapter> Chapters { get; set; }
- 
+
+
+        [EnumDataType(typeof(Testament))]
         [Required]
         public Testament Testament { get; set; }
 

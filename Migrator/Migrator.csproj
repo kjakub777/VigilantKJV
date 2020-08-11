@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200808194034_ChangeTestament.cs" />
+    <Compile Remove="Migrations\20200808194034_ChangeTestament.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.design" Version="3.1.6">
       <PrivateAssets>all</PrivateAssets>

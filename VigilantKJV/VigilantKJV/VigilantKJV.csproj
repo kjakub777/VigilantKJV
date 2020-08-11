@@ -17,15 +17,46 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DataAccess\KJVWHOLE.csv" />
-    <None Remove="DataAccess\MostRecentVerses.csv" />
+    <EmbeddedResource Remove="Views\ItemsPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="DataAccess\Books.sql" />
+    <None Remove="DataAccess\Chapters.sql" />
+    <None Remove="DataAccess\Delete.sql" />
+    <None Remove="DataAccess\KJVWHOLE.csv" />
+    <None Remove="DataAccess\MostRecentVerses.csv" />
+    <None Remove="DataAccess\SetMemorized.sql" />
+    <None Remove="DataAccess\Verses.sql" />
+    <None Remove="DataAccess\view.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="DataAccess\Delete.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataAccess\SetMemorized.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataAccess\View.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="DataAccess\Books.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataAccess\Chapters.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataAccess\KJVWHOLE.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="DataAccess\MostRecentVerses.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataAccess\Verses.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -34,6 +65,7 @@
     <PackageReference Include="Acr.UserDialogs" Version="7.1.0.446" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
+    <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="Xamarin.Forms" Version="4.5.0.495" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
@@ -50,6 +82,15 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\DbToolsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\LastRecitedPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MemorizedPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\VerseDetailPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

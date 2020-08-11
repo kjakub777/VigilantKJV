@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+            xmlns:behaviors="clr-namespace:VigilantKJV.Behaviors"
+             x:Class="VigilantKJV.Views.VerseDetailPage">
+    <ContentPage.Content>
+        <StackLayout Spacing="20" Padding="15" Style="{StaticResource StackLayoutStyle}">
+            <Label Text="{Binding Verse.FullTitle, Mode=OneWay}" Style="{StaticResource Label_HeaderStyle}" FontSize="Medium"  />
+            <Label Text="{Binding Verse.Text, Mode=OneWay}" Style="{StaticResource Label_VerseStyle}" d:Text="Item description" FontSize="Small"/>
+            <StackLayout Orientation="Horizontal"><Label Text="Memorized"   FontSize="Large"/>
+                <Button Text="{Binding Verse.sLastRecited}" Clicked="Recited_Clicked">
+                    <Button.Behaviors>
+                        <behaviors:LongPressBehavior LongPressed="MyButton_LongPressed"/>
+                    </Button.Behaviors>
+                </Button> </StackLayout>  
+            <CheckBox IsChecked="{Binding IsMemorized}" CheckedChanged="CheckBox_CheckedChanged"></CheckBox>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

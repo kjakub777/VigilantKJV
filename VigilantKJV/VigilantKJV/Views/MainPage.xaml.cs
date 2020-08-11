@@ -34,13 +34,13 @@ namespace VigilantKJV.Views
                         MenuPages.Add(id, new NavigationPage(new BiblePage()));
                         break;
                     case (int)MenuItemType. Memorized:
-                        MenuPages.Add(id, new NavigationPage(new BiblePage()));
+                        MenuPages.Add(id, new NavigationPage(new MemorizedPage()));
                         break;
                     case (int)MenuItemType.DbTools:
                         MenuPages.Add(id, new NavigationPage(new DbToolsPage()));
                         break;
                     case (int)MenuItemType.LastRecited:
-                        MenuPages.Add(id, new NavigationPage(new BiblePage()));
+                        MenuPages.Add(id, new NavigationPage(new LastRecitedPage()));
                         break;
                     
                     case (int)MenuItemType.About:

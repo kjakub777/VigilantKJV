@@ -7,7 +7,7 @@
              x:Class="VigilantKJV.Views.DbToolsPage"
     Title="{Binding Title}">
     <ContentPage.Content>
-        <StackLayout>
+        <ScrollView> <StackLayout>
             <Label HorizontalOptions="CenterAndExpand" Text="Path to export to."></Label>
             <Entry HorizontalOptions="FillAndExpand"  Text="{Binding ExportPath}" Placeholder="/storage/9C33-6BBD/temp/" x:Name="EntryExp" ></Entry>
             <!--TextChanged="EntryExp_TextChanged"-->
@@ -17,6 +17,7 @@
                 <CheckBox x:Name="cbFtp"  HorizontalOptions="CenterAndExpand" IsChecked="{Binding UpFtp}" ></CheckBox>
                 <!--CheckedChanged="cbFtp_CheckedChanged"-->
             </StackLayout>
+            <Image Source="kjv.jpg" Aspect="AspectFill" ></Image>
             <Label Text="Path to import from."  HorizontalOptions="CenterAndExpand"></Label>
             <!--TextChanged="EntryImp_TextChanged"-->
             <!--Text="{x:Binding Path=viewmodel.ImportPath,Mode=TwoWay,UpdateSourceEventName=SetImportPath}"-->
@@ -25,6 +26,24 @@
             <Button Text="Import DB from original CSV" Clicked="ImportDBOrig_Clicked"></Button>
             <Button Text="Clear DB" Clicked="ClearDB_Clicked"></Button>
             <ProgressBar x:Name="pbar"  ProgressColor="{StaticResource ProgressAndHighlightColor}" />
-        </StackLayout>
+                <Label x:Name="lblpbar"   ></Label>
+                <Editor x:Name="SqlEditor" Text="{Binding SqlEditorText}" />
+                <Picker Title="Pick File" SelectedItem="{Binding SqlFilePick}" SelectedIndex="0"  Style="{StaticResource PickerStyle}">
+                    <Picker.Items>
+                        <x:String >Books.sql</x:String>
+                        <x:String >Chapters.sql</x:String>
+                        <x:String >View.sql</x:String>
+                        <x:String >SetMemorized.sql</x:String>
+                        <x:String >Delete.sql</x:String>
+                        <x:String >Verses.sql</x:String> 
+                    </Picker.Items></Picker>
+                <StackLayout Style="{StaticResource StackLayoutStyle}" Orientation="Horizontal" >
+                    <Switch x:Name="toggleSql" IsToggled="{Binding IsSqlFiles}"  />
+                    <CheckBox IsVisible="{Binding Source={x:Reference toggleSql},Path=IsToggled}" IsChecked="{Binding CheckExistingFirst}"></CheckBox>
+                </StackLayout>  
+                <Button x:Name="btnSql" Text="Execute Sql" Clicked="btnSql_Clicked" />
+            
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

@@ -5,6 +5,13 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Metadata;
 using VigilantKJV.Helpers;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Linq;
+using Acr.UserDialogs;
+using System.Diagnostics.Contracts;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Linq.Expressions;
 
 namespace VigilantKJV.Models
 {
@@ -69,7 +76,7 @@ namespace VigilantKJV.Models
 
                 entity.Property(e => e.Testament)
                     .IsRequired()
-                    .HasColumnType("int");
+                    .HasColumnType("string");
             });
 
             modelBuilder.Entity<Chapter>(entity =>
@@ -134,6 +141,71 @@ namespace VigilantKJV.Models
             OnModelCreatingPartial(modelBuilder);
         }
 
+        public async Task<IQueryable<Book>> GetMemorizedBooks()
+        {
+            string sql = @"
+                    select * from book b 
+                    where b.Id in(select bookid from verse v where  v.IsMemorized=1 )";
+          
+            return await Task<IQueryable<Book>>
+                .FromResult(Book.FromSqlRaw(sql)
+                .Include(bo=>bo.Chapters)
+                .ThenInclude(c=>c.Verses));
+        }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public async Task ExportDatabaseScript()
+        {
+
+        }
+        public async Task DeleteAll()
+        {            
+            await Task.Factory
+             .StartNew(() =>
+             {
+                 UserDialogs.Instance
+                     .Confirm(new ConfirmConfig()
+                     {
+                         CancelText = "Oops! No.",
+                         Message = $"Are you sure you want to delete?",
+                         OkText = "Very Sure.",
+                         Title = "Data Issue",
+                         OnAction =
+                         delegate(bool confirm)
+                         {
+                             if(confirm)
+                             {
+                                 this.Database.EnsureDeleted();
+                                 UserDialogs.Instance.Alert("Db Deleted.");
+                             }
+                         }
+                     });
+             });
+        }
     }
 }
+
+//namespace VigilantKJV.Models
+/*{
+    public class TestamentValueConverter : ValueConverter
+    {
+        public TestamentValueConverter(LambdaExpression convertToProviderExpression):base(convertToProviderExpression)
+        {
+
+        }
+        public override Func<object, object> ConvertToProvider => new Func<object, object>((testament) =>
+        {     return       Enum.GetName(typeof(Testament), testament);
+        });
+
+
+        public override Func<object, object> ConvertFromProvider => new Func<object, object>((testament) =>
+        {
+            return Enum.Parse(typeof(Testament), ""+testament);
+        });
+
+        public override Type ModelClrType => typeof(int);
+
+        public override Type ProviderClrType => typeof(int);
+
+    }
+}*/

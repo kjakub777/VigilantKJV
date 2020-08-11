@@ -16,8 +16,11 @@ namespace VigilantKJV.Models
         public string Text { get; set; }
         public int Number { get; set; }
         [ForeignKey("FK_Verse_ChapterId")]
-        public Guid ChapterId { get; set; } 
-        public Chapter Chapter { get;set;}
+        public Guid ChapterId { get; set; }
+        public Chapter Chapter { get; set; }
+        [ForeignKey("FK_Verse_BookId")]
+        public Guid BookId { get; set; }
+        public Book Book { get; set; }
         //public Book Book { get; set; }
         public bool IsMemorized { get; set; } 
         public DateTime LastRecited { get; set; }

@@ -15,6 +15,9 @@ namespace VigilantKJV.Models
         [MaxLength(1000)]
         public string Text { get; set; }
         public int Number { get; set; }
+        [ForeignKey("FK_Verse_BookId")]
+        public Guid BookId { get; set; }
+        public Book Book { get; set; }
         [ForeignKey("FK_Verse_ChapterId")]
         public Guid ChapterId { get; set; } 
         public Chapter Chapter { get;set;}
@@ -24,7 +27,7 @@ namespace VigilantKJV.Models
 
         public string ChapVerseText => $"{Chapter?.Number}:{Number}";
         public string FullTitle => $"{Chapter?.Book?.Name} {Chapter?.Number}:{Number}";
-        public override string ToString() => $"{ChapterId}:{Number}";
+        public override string ToString() => $"{Chapter?.Number}:{Number}\n{Text}";
       
         public string Information { get; set; }
 

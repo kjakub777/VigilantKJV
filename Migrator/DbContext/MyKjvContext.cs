@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text; 
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace VigilantKJV.Models
 {
@@ -68,7 +69,7 @@ namespace VigilantKJV.Models
 
                 entity.Property(e => e.Testament)
                     .IsRequired()
-                    .HasColumnType("int");
+                    .HasColumnType("string");
             });
 
             modelBuilder.Entity<Chapter>(entity =>

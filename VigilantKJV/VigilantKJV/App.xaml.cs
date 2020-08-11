@@ -20,6 +20,12 @@ namespace VigilantKJV
         public App()
         {
             InitializeComponent();
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) => {
+                System.Exception ex = (System.Exception)args.ExceptionObject;
+                Console.WriteLine(ex);
+            };
+
+
             DependencyService.Register<MyKjvContext>();
             if (UseMockDataStore)
                 DependencyService.Register<MockDataStore>();

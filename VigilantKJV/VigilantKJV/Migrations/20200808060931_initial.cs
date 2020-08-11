@@ -26,7 +26,7 @@ namespace Migrator.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Testament = table.Column<int>(type: "int", nullable: false),
+                    Testament = table.Column<string>(type: "string", nullable: false),
                     Name = table.Column<string>(type: "nvarchar", nullable: true),
                     Ordinal = table.Column<int>(type: "int", nullable: false),
                     Information = table.Column<string>(type: "nvarchar", nullable: true)

@@ -22,6 +22,8 @@ namespace VigilantKJV.Views
             menuItems = new List<HomeMenuItem>
             {
                 new HomeMenuItem {Id = MenuItemType.Bible, Title="KJV Bible" },
+                new HomeMenuItem {Id = MenuItemType.Memorized, Title="Memory Collection" },
+                new HomeMenuItem {Id = MenuItemType.LastRecited, Title="Last Recited" },
                 new HomeMenuItem {Id = MenuItemType.DbTools, Title="Db Tools" },
                 new HomeMenuItem {Id = MenuItemType.About, Title="About" }
             };

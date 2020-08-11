@@ -51,8 +51,8 @@ namespace Migrator.Migrations
                     b.Property<int>("Ordinal")
                         .HasColumnType("int");
 
-                    b.Property<int>("Testament")
-                        .HasColumnType("int");
+                    b.Property<Testament>("Testament")
+                        .HasColumnType("string");
 
                     b.HasKey("Id");
 
@@ -87,6 +87,9 @@ namespace Migrator.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("ChapterId")
                         .HasColumnType("uniqueidentifier");
 
@@ -109,6 +112,8 @@ namespace Migrator.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BookId");
+
                     b.HasIndex("ChapterId");
 
                     b.ToTable("Verse");
@@ -125,6 +130,12 @@ namespace Migrator.Migrations
 
             modelBuilder.Entity("VigilantKJV.Models.Verse", b =>
                 {
+                    b.HasOne("VigilantKJV.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("VigilantKJV.Models.Chapter", "Chapter")
                         .WithMany("Verses")
                         .HasForeignKey("ChapterId")

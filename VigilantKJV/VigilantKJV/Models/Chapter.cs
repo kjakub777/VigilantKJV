@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VigilantKJV.Models
 {
-    public class Chapter
+    public class Chapter:IDbObject
     {
         public Chapter()
         {
@@ -25,5 +25,11 @@ namespace VigilantKJV.Models
         public int Number { get; set; }
        
         public string Information { get; set; }
+        public string FriendlyLabel => $"{Book?.Name} {Number}"; 
+
+        public override string ToString()
+        {
+            return $"{Book?.Name} {Number}";
+        }
     }
 }
