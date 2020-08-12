@@ -28,7 +28,9 @@ namespace VigilantKJV.Models
         public string ChapVerseText => $"{Chapter?.Number}:{Number}";
         public string FullTitle => $"{Chapter?.Book?.Name} {Chapter?.Number}:{Number}";
         public override string ToString() => $"{Chapter?.Number}:{Number}\n{Text}";
-      
+
+        public string TimeSinceRecited => new TimeSpan(DateTime.Now.ToLocalTime().Ticks -
+            LastRecited.ToLocalTime().Ticks).ToString(@"dd\.hh\:mm\:ss");
         public string Information { get; set; }
 
     }

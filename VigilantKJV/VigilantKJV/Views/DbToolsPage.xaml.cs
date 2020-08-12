@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using VigilantKJV.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -18,8 +18,9 @@ namespace VigilantKJV.Views
         VigilantKJV.ViewModels.DbToolsViewModel viewmodel;
         public DbToolsPage()
         {
+         //   var nav = DependencyService.Get<INavigationService>();
             InitializeComponent();
-            BindingContext = viewmodel = new VigilantKJV.ViewModels.DbToolsViewModel();
+            BindingContext = viewmodel = new VigilantKJV.ViewModels.DbToolsViewModel( );
 
             //EntryImp
             //cbFtp

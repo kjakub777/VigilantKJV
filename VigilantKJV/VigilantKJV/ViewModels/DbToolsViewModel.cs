@@ -9,14 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using VigilantKJV.Services;
+
 using Xamarin.Forms;
 
 namespace VigilantKJV.ViewModels
 {
     public class DbToolsViewModel : BaseViewModel
-    { 
-
-        DataAccess.DataStore db;
+    {
+        public DataAccess.DataStore DBAccess { get; set; }
         string exportPath;
 
 
@@ -35,8 +36,7 @@ namespace VigilantKJV.ViewModels
 
         public DbToolsViewModel()
         {
-            db = new DataAccess.DataStore();
-
+            DBAccess = new DataAccess.DataStore();
             //    ImportDbCommand = new Command(async () => await ExecuteImportDbCommand());
             //ExportDbCommand = new Command(async () => await ExecuteExportDbCommand()); 
             //    ClearDbCommand = new Command(async () => await ExecuteClearDbCommand()); 
@@ -49,7 +49,7 @@ namespace VigilantKJV.ViewModels
             IsInProgress = false;
             Position = 0;
             this.ImportPath = System.IO.Path
-                .Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Db.txt");//"/storage/9C33-6BBD/temp/db.txt";
+                .Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Db.txt");//"/storage/9C33-6BBD/temp/DBAccess.txt";
             this.ExportPath = System.IO.Path
                 .Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Db.db3");// "/storage/9C33-6BBD/temp/";
         }
@@ -59,7 +59,7 @@ namespace VigilantKJV.ViewModels
             IsInProgress = true;
             try
             {
-                await Task.Factory.StartNew(() => db.DB.DeleteAll());
+                await Task.Factory.StartNew(() => DBAccess.DeleteAll());
                 return true;
             }
             catch (Exception ex)
@@ -83,7 +83,7 @@ namespace VigilantKJV.ViewModels
                 filename = filename.Replace(".sql", "Check.sql");
             }
 
-            await Task.Factory.StartNew(() => db.ExecuteSqlEmbeddedScripts(filename, action));
+            await Task.Factory.StartNew(async () => SqlEditorText = await DBAccess.ExecuteSqlEmbeddedScripts(filename, action));
         }
         public async Task ExecuteSql(Action<double, uint> action)
         {
@@ -93,7 +93,7 @@ namespace VigilantKJV.ViewModels
             }
             else if (!string.IsNullOrEmpty(SqlEditorText))
             {
-                await Task.Factory.StartNew(() => db.ExecuteSql(SqlEditorText, action));
+                await Task.Factory.StartNew(async () => SqlEditorText = await DBAccess.ExecuteSql(SqlEditorText));
             }
         }
         public async Task<bool> ExportDb(Action<double, uint> action)
@@ -101,7 +101,7 @@ namespace VigilantKJV.ViewModels
             IsInProgress = true;
             try
             {
-                await Task.Factory.StartNew(() => db.ExportDb(ExportPath, action, UpFtp));
+                await Task.Factory.StartNew(() => DBAccess.ExportDb(ExportPath, action, UpFtp));
 
                 return true;
             }
@@ -120,7 +120,7 @@ namespace VigilantKJV.ViewModels
             IsInProgress = true;
             try
             {
-                await Task.Factory.StartNew(() => db.ImportDb(ImportPath, action));
+                await Task.Factory.StartNew(() => DBAccess.ImportDb(ImportPath, action));
 
                 return true;
             }
@@ -139,7 +139,7 @@ namespace VigilantKJV.ViewModels
             IsInProgress = true;
             try
             {
-                await Task.Factory.StartNew(() => db.SeedData(action, true));
+                await Task.Factory.StartNew(() => DBAccess.SeedData(action, true));
 
                 return true;
             }

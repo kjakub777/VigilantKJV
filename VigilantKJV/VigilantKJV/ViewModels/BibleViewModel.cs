@@ -11,19 +11,22 @@ using System.Linq;
 using Xamarin.Forms.Internals;
 using Microsoft.EntityFrameworkCore;
 using System.Dynamic;
+using VigilantKJV.Services;
 
 namespace VigilantKJV.ViewModels
 {
     public class BibleViewModel : BaseViewModel
     {
 
+        public DataAccess.DataStore DBAccess { get; set; }
         Book book;
 
         Chapter chapter;
         string testament;
 
-        public BibleViewModel() : base()
+        public BibleViewModel()
         {
+            DBAccess = new DataAccess.DataStore();
             Title = "The True Word (kjv)";
             Books = new ObservableCollection<Book>();
             Chapters = new ObservableCollection<Chapter>();
@@ -62,11 +65,11 @@ namespace VigilantKJV.ViewModels
             }
             else if (sliderVal < 2 * onethird)
             {
-                Testament = "New";
+                Testament = "Both";
             }
             else
             {
-                Testament = "Both";
+                Testament = "New";
             }
             //switch (Testament)
             //{

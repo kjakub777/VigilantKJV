@@ -1,16 +1,16 @@
-﻿using System;
+﻿//using System;
 
-using VigilantKJV.Models;
+//using VigilantKJV.Models;
 
-namespace VigilantKJV.ViewModels
-{
-    public class ItemDetailViewModel : BaseViewModel
-    {
-        public Item Item { get; set; }
-        public ItemDetailViewModel(Item item = null)
-        {
-            Title = item?.Text;
-            Item = item;
-        }
-    }
-}
+//namespace VigilantKJV.ViewModels
+//{
+//    public class ItemDetailViewModel : BaseViewModel
+//    {
+//        public Item Item { get; set; }
+//        public ItemDetailViewModel(Item item = null)
+//        {
+//            Title = item?.Text;
+//            Item = item;
+//        }
+//    }
+//}

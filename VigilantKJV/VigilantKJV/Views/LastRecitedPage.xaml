@@ -10,9 +10,9 @@
         <RefreshView IsRefreshing="{Binding IsBusy, Mode=TwoWay}" Command="{Binding LoadItemsCommand}">
             <StackLayout>
                 <ActivityIndicator Color="#cbdf90" IsVisible="{Binding IsBusy}" />
-                <CollectionView x:Name="ItemsCollectionView"
+                <ListView x:Name="ItemsCollectionView"
                 ItemsSource="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedVerse, Mode=OneWayToSource}">
-                    <CollectionView.ItemTemplate>
+                    <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackLayout Padding="10">
                                 <Label Text="{Binding FullTitle}" 
@@ -36,8 +36,8 @@
                                 </StackLayout.GestureRecognizers>
                             </StackLayout>
                         </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                    </ListView.ItemTemplate>
+                </ListView>
             </StackLayout>
         </RefreshView>
     </ContentPage.Content>

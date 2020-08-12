@@ -3,5 +3,23 @@
     <color name="launcher_background">#FFFFFF</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#FF4081</color> 
+
+  <!--<Color x:Key="NavigationPrimary">#000000</Color>
+  <Color x:Key="NavigationText">#f8f9fa</Color>
+  <Color x:Key="Picker_Title">#FCFAEE</Color>
+  <Color x:Key="Picker_Background">#F1C47B</Color>
+  <Color x:Key="Label_VerseBackground">#0A111F</Color>
+  <Color x:Key="Label_VerseText">#FFA920</Color>
+  <Color x:Key="StackLayout_Background">#14213D</Color>
+  <Color x:Key="Label_HeaderBackground">#eae2b7</Color>
+  <Color x:Key="Label_HeaderText">#003049</Color>
+  <Color x:Key="Page_Background">#48585D</Color>
+  <Color x:Key="ProgressAndHighlightColor">#66F578</Color>
+  <Color x:Key="Button_RecitedBackground">#98C1D9</Color>
+  <Color x:Key="Boxview_VerseBackground">#FFFFFF</Color>
+  <Color x:Key="EntryBackground">#14213D</Color>
+  <Color x:Key="EntryText">#FCA311</Color>-->
+
+
 </resources>

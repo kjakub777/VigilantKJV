@@ -8,15 +8,20 @@
              x:Class="VigilantKJV.Views.VerseDetailPage">
     <ContentPage.Content>
         <StackLayout Spacing="20" Padding="15" Style="{StaticResource StackLayoutStyle}">
-            <Label Text="{Binding Verse.FullTitle, Mode=OneWay}" Style="{StaticResource Label_HeaderStyle}" FontSize="Medium"  />
-            <Label Text="{Binding Verse.Text, Mode=OneWay}" Style="{StaticResource Label_VerseStyle}" d:Text="Item description" FontSize="Small"/>
-            <StackLayout Orientation="Horizontal"><Label Text="Memorized"   FontSize="Large"/>
-                <Button Text="{Binding Verse.sLastRecited}" Clicked="Recited_Clicked">
+            <Label Text="{Binding Verse.FullTitle, Mode=OneWay}" Style="{StaticResource Label_HeaderStyle}" FontSize="Subtitle"  />
+            <Label Text="{Binding Verse.Text, Mode=OneWay}" Style="{StaticResource Label_VerseStyle}" d:Text="Item description" FontSize="Large"/>
+            <StackLayout  >
+              <StackLayout Orientation="Horizontal" >                   
+                        <Label Text="Last Recited:  "  HorizontalOptions="CenterAndExpand" FontSize="Large"/>
+                        <Label Text="{Binding Verse.TimeSinceRecited}"  HorizontalOptions="CenterAndExpand" FontSize="Large"/>
+                </StackLayout>
+                <Button Text="Recite!" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Clicked="Recited_Clicked">
                     <Button.Behaviors>
                         <behaviors:LongPressBehavior LongPressed="MyButton_LongPressed"/>
                     </Button.Behaviors>
-                </Button> </StackLayout>  
-            <CheckBox IsChecked="{Binding IsMemorized}" CheckedChanged="CheckBox_CheckedChanged"></CheckBox>
+                </Button> </StackLayout> 
+            <Label Text="Memorized" HorizontalOptions="CenterAndExpand" FontSize="Large"/>
+            <CheckBox IsChecked="{Binding IsMemorized}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" CheckedChanged="CheckBox_CheckedChanged"></CheckBox>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

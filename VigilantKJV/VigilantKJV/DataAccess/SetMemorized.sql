@@ -1,4 +1,3 @@
-UPDATE verse SET bookid = (SELECT bookid FROM chapter WHERE id = verse.chapterid);
 update verse set ismemorized =1 where id in (select vid from TextKey where textkey.key='Genesis1:27');
 update verse set ismemorized =1 where id in (select vid from TextKey where textkey.key='Genesis1:28');
 update verse set ismemorized =1 where id in (select vid from TextKey where textkey.key='Exodus15:1');
@@ -379,3 +378,4 @@ update verse set ismemorized =1 where id in (select vid from TextKey where textk
 update verse set ismemorized =1 where id in (select vid from TextKey where textkey.key='Revelation14:10');
 update verse set ismemorized =1 where id in (select vid from TextKey where textkey.key='Revelation20:14');
 update verse set ismemorized =1 where id in (select vid from TextKey where textkey.key='Revelation21:8');
+UPDATE verse SET bookid = (SELECT bookid FROM chapter WHERE id = verse.chapterid);

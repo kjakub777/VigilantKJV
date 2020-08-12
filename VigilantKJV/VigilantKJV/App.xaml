@@ -28,19 +28,22 @@
   </Canvas>
 </Viewbox>
 -->
-            <Color x:Key="NavigationPrimary">#48585D</Color>
-            <Color x:Key="NavigationText">#eaead7</Color>
-            <Color x:Key="Picker_Title">#FCFAEE</Color>
-            <Color x:Key="Picker_Background">#EEE3C4</Color>
-            <Color x:Key="Label_VerseBackground">#d2d4c3</Color>
-            <Color x:Key="Label_VerseText">#2c373a</Color>
-            <Color x:Key="StackLayout_Background">#48585D</Color>
-            <Color x:Key="Label_HeaderBackground">#2c373a</Color>
-            <Color x:Key="Label_HeaderText">#faf7e0</Color>
-            <Color x:Key="Page_Background">#48585D</Color>
-            <Color x:Key="ProgressAndHighlightColor">LightGreen</Color>
-            <Color x:Key="Button_RecitedBackground">#b7b695</Color>
-            <Color x:Key="Boxview_VerseBackground">#3E483C</Color> 
+          <Color x:Key="NavigationPrimary">#3d5a80</Color>
+          <Color x:Key="NavigationText">#f8f9fa</Color>
+          <Color x:Key="Picker_Title">#FCFAEE</Color>
+          <Color x:Key="Picker_Background">#ee6c4d</Color>
+          <Color x:Key="Label_VerseBackground">#f5cb5c</Color>
+          <Color x:Key="Label_VerseText">#333533</Color>
+          <Color x:Key="StackLayout_Background">#48585D</Color>
+          <Color x:Key="Label_HeaderBackground">#eae2b7</Color>
+          <Color x:Key="Label_HeaderText">#003049</Color>
+          <Color x:Key="Page_Background">#48585D</Color>
+          <Color x:Key="ProgressAndHighlightColor">#80ffdb</Color>
+          <Color x:Key="Button_RecitedBackground">#98C1D9</Color>
+          <Color x:Key="Button_RecitedBorder">#FCA311</Color>
+          <Color x:Key="Boxview_VerseBackground">#FFFFFF</Color>
+          <Color x:Key="EntryBackground">#14213D</Color>
+          <Color x:Key="EntryText">#FCA311</Color> 
             <Style TargetType="NavigationPage">
                 <Setter Property="HeightRequest" Value="75"></Setter>
                 <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationPrimary}" />
@@ -55,6 +58,9 @@
                 <Setter Property="HorizontalOptions" Value="Fill" />
                 <Setter Property="VerticalOptions" Value="CenterAndExpand" />
                 <Setter Property="Margin" Value="0,2,0,0" />
+            </Style>
+            <Style x:Key="RecitedRecently"  TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource StackLayout_Background}" />
             </Style>
             <!--stack layout back 676151-->
             <Style x:Key="StackLayoutStyle" TargetType="StackLayout">

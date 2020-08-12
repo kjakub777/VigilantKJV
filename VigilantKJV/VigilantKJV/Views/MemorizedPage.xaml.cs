@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 using VigilantKJV.Models;
+using VigilantKJV.Services;
 using VigilantKJV.ViewModels;
 
 using Xamarin.Forms;
@@ -15,13 +17,36 @@ namespace VigilantKJV.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MemorizedPage : ContentPage
     {
-        public MemorizedViewModel viewmodel;
+        public BookGroupViewModel viewmodel;
         public MemorizedPage()
         {
+          //  var nav = DependencyService.Get<INavigationService>();
             InitializeComponent();
-            BindingContext = viewmodel = new MemorizedViewModel();
+            BindingContext = viewmodel = new BookGroupViewModel( );
         }
+        protected override void OnAppearing()
+        {
+            try
+            {
+                base.OnAppearing();
 
+                if (viewmodel.Items.Count == 0)
+                {
+                    viewmodel.LoadBooksCommand.Execute(null);
+                }
+            }
+            catch (Exception Ex)
+            {
+                Debug.WriteLine(Ex.Message);
+            }
+        }
+        public MemorizedPage(BookGroupViewModel viewModel)
+        {
+            InitializeComponent();
+            this.viewmodel = viewModel;
+            Title = "Memorized";
+
+        }
         static readonly Dictionary<ListView, Dictionary<VisualElement, int>> _listViewHeightDictionary = new Dictionary<ListView, Dictionary<VisualElement, int>>();
 
         private void VisualElement_OnSizeChanged(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-drop   index if exists Book_Id;
+drop   index if exists Book_Name;
 create  unique index Book_Name on Book ( Name) ;
 insert or ignore INTO Book (Id,Name,Testament,Ordinal) VALUES (lower(hex(randomblob(16))),'Genesis','Old',1);
 insert or ignore INTO Book (Id,Name,Testament,Ordinal) VALUES (lower(hex(randomblob(16))),'Exodus','Old',2);

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using VigilantKJV.Models;
+using VigilantKJV.Services;
 using VigilantKJV.ViewModels;
 
 using Xamarin.Forms;
@@ -20,8 +21,11 @@ namespace VigilantKJV.Views
         public BibleViewModel viewmodel;
         public BiblePage()
         {
+            //var nav = DependencyService.Get<INavigationService>();
             InitializeComponent();
-            BindingContext = viewmodel = new BibleViewModel();
+            viewmodel = new BibleViewModel();
+            // viewmodel.Navigation=Navigation
+            BindingContext = viewmodel;
         }
 
         public Command SwipeCommand => new Command(() => SwipeGestureRecognizer_Swiped(this, null));
@@ -53,7 +57,7 @@ namespace VigilantKJV.Views
 
         private void Slider_ValueChanged(object sender, ValueChangedEventArgs e)
         {
-            UserDialogs.Instance.Toast($"Slider_ValueChanged e{e} {sender}  ");
+            //   UserDialogs.Instance.Toast($"Slider_ValueChanged e{e} {sender}  ");
 
             try
             {
@@ -78,19 +82,15 @@ namespace VigilantKJV.Views
 
         private async void OnVerseTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new VerseDetailPage(viewmodel.Verse));
-            viewmodel.IsBusy = true;
-            UserDialogs.Instance.Toast($" {sender} {e}");
+            await Navigation.PushAsync(new VerseDetailPage(viewmodel.Verse));            
+
+            IsBusy = true;
+            UserDialogs.Instance.Toast($" {sender} {e}"); 
+            //viewmodel.IsBusy = true;
+            //UserDialogs.Instance.Toast($" {sender} {e}");
             // await viewmodel.HandleVerseTapped();
         }
 
-        private async void OnVerseTapped(object sender, ItemTappedEventArgs e)
-        {
-            var layout = (BindableObject)sender;
-            var item = (Verse)layout.BindingContext;
-            await Navigation.PushAsync(new VerseDetailPage(viewmodel.Verse));
-            viewmodel.IsBusy = true;
-            UserDialogs.Instance.Toast($" {sender} {item}");
-        }
+     
     }
 }

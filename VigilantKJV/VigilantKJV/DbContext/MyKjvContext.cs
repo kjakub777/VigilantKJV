@@ -141,47 +141,9 @@ namespace VigilantKJV.Models
             OnModelCreatingPartial(modelBuilder);
         }
 
-        public async Task<IQueryable<Book>> GetMemorizedBooks()
-        {
-            string sql = @"
-                    select * from book b 
-                    where b.Id in(select bookid from verse v where  v.IsMemorized=1 )";
-          
-            return await Task<IQueryable<Book>>
-                .FromResult(Book.FromSqlRaw(sql)
-                .Include(bo=>bo.Chapters)
-                .ThenInclude(c=>c.Verses));
-        }
+      
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-        public async Task ExportDatabaseScript()
-        {
-
-        }
-        public async Task DeleteAll()
-        {            
-            await Task.Factory
-             .StartNew(() =>
-             {
-                 UserDialogs.Instance
-                     .Confirm(new ConfirmConfig()
-                     {
-                         CancelText = "Oops! No.",
-                         Message = $"Are you sure you want to delete?",
-                         OkText = "Very Sure.",
-                         Title = "Data Issue",
-                         OnAction =
-                         delegate(bool confirm)
-                         {
-                             if(confirm)
-                             {
-                                 this.Database.EnsureDeleted();
-                                 UserDialogs.Instance.Alert("Db Deleted.");
-                             }
-                         }
-                     });
-             });
-        }
+    
     }
 }
 

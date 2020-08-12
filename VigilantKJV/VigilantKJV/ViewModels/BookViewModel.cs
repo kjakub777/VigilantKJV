@@ -19,27 +19,21 @@ using Xamarin.Forms.Internals;
 using System.ComponentModel;
 
 using MvvmHelpers;
+using VigilantKJV.Services;
 
 namespace VigilantKJV.ViewModels
 {
-    public class BookViewModel : ObservableRangeCollection<VerseViewModel>, INotifyPropertyChanged//,BaseViewModel
+    public class BookViewModel : ObservableRangeCollection<VerseViewModel>,INotifyPropertyChanged 
     {
-        DataAccess.DataStore db;
+        
         public string Title;
         // It's a backup variable for storing CountryViewModel objects
         ObservableRangeCollection<VerseViewModel> verses = new ObservableRangeCollection<VerseViewModel>();
         Book book;
-        public BookViewModel(string BookName, bool expanded) : base()
-        {
-            db = new DataAccess.DataStore();
-            Title = "Memorized";
-            this._expanded = expanded;
-            Book = new Book() { Name = BookName };
-            LoadVerses();
-        }
-        public BookViewModel(Book book, bool expanded) : base()
-        {
-            db = new DataAccess.DataStore();
+
+        public   DataAccess.DataStore DBAccess { get; set; }
+        public BookViewModel(Book book, bool expanded,DataAccess.DataStore DBAccess )
+        { this.DBAccess = DBAccess;
             Title = "Memorized";
             this._expanded = expanded;
             this.Book = book;
@@ -50,17 +44,18 @@ namespace VigilantKJV.ViewModels
         {
             try
             {
+                  verses.Clear();
                 //add  each chapter manually 
-
-                verses.Clear();
-                verses.AddRange(
-                    (from b in Book.Chapters
-                     from x in b.Verses
-                     where x.IsMemorized
-                     select new VerseViewModel(x))
+                // var nav= DependencyService.Get<INavigationService>();
+                await Task.Run(() =>
+              {
+                  verses.AddRange((from chapter in Book.Chapters
+                     from verse in chapter.Verses
+                      where verse.IsMemorized
+                      select new VerseViewModel(verse,DBAccess))
                     .OrderBy(x => x.Verse.Chapter.Number)
-                    .ThenBy(x => x.Verse.Number)
-                    );
+                      .ThenBy(x => x.Verse.Number));
+              });
             }
             catch (Exception ex)
             {
@@ -112,17 +107,16 @@ namespace VigilantKJV.ViewModels
             {
                 if (Expanded)
                 {
-                    return "arrow_b2.png";
+                    return "arrow_b.png";
                 }
                 else
                 {
-                    return "arrow_a2.png";
+                    return "arrow_a.png";
                 }
             }
         }
         public string Name { get { return Book.Name; } }
 
         public Book Book { get => this.book; set => this.book = value; }
-        public bool IsBusy { get; private set; }
-    }
+        }
 }

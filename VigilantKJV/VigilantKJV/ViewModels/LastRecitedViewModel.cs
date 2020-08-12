@@ -9,29 +9,33 @@ using System.Text;
 using System.Threading.Tasks;
 
 using VigilantKJV.Models;
+using VigilantKJV.Services;
+
 using Xamarin.Forms;
 
 namespace VigilantKJV.ViewModels
 {
     public class LastRecitedViewModel : BaseViewModel
     {
+        public DataAccess.DataStore DBAccess { get; set; }
         public List<(Guid, DateTime)> previousLastReciteds;
-        public Verse SelectedVerse { get;set;}
-        DataAccess.DataStore db;
+        public Verse SelectedVerse { get; set; }
         public LastRecitedViewModel()
-        {            Title = "Last Time Recited";
+        {
+            DBAccess = new DataAccess.DataStore();
+            Title = "Last Time Recited";
             Items = new ObservableCollection<Verse>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-            db = new DataAccess.DataStore();
+            LoadVersesCommand = new Command(async () => await ExecuteLoadVersesCommand());
             previousLastReciteds = new List<(Guid, DateTime)>();
         }
         public ObservableCollection<Verse> Items { get; set; }
-        public Command LoadItemsCommand { get; set; }
+        public Command LoadVersesCommand { get; set; }
 
         internal async Task UpdateRecited(Verse item)
         {
             previousLastReciteds.Add((item.Id, item.LastRecited));
-            await db.UpdateRecited(item);
+            await DBAccess.UpdateRecited(item.Id,null);
+            IsBusy = true;
         }
         internal async Task UpdateRecitedUndo(Verse item)
         {
@@ -40,29 +44,15 @@ namespace VigilantKJV.ViewModels
             {
                 var prev = previousLastReciteds.FirstOrDefault(x => x.Item1 == item.Id);
                 previousLastReciteds.Remove(prev);
-                await db.UpdateRecited(prev.Item1, prev.Item2);
+                await DBAccess.UpdateRecited(prev.Item1, prev.Item2);
+                IsBusy = true;
             }
             else
             {
                 UserDialogs.Instance.Toast("No previous value stored.");
             }
         }
-        async Task ExecuteLoadItemsCommand()
-        {
-            IsBusy = true;
-            try
-            {
-                await ExecuteLoadVersesCommand();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
+        
 
         public async Task ExecuteLoadVersesCommand()
         {
@@ -70,7 +60,7 @@ namespace VigilantKJV.ViewModels
             try
             {
                 Items.Clear();
-                var vs = await db.GetLastRecitedAsync();
+                var vs = await DBAccess.GetLastRecitedAsync();
                 vs.ForEach((v) => Items.Add(v));
 
             }

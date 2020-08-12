@@ -350,8 +350,50 @@ namespace VigilantKJV.DataAccess
             }
             return false;
         }
-        public async Task ExecuteSqlEmbeddedScripts(string filename, Action<double, uint> action, bool linedelimitted = true)
+        public async Task<List<Book>> GetMemorizedBooks()
         {
+            string sql = @"
+                    select * from book 
+                    where book.Id in(select bookid from verse  where  verse.IsMemorized=1 )
+                       order by book.ordinal";
+
+            return await this.DB.Book.FromSqlRaw(sql)
+                        .Include(bo => bo.Chapters)
+                        .ThenInclude(c => c.Verses)
+                        .OrderBy(x => x.Ordinal)
+                        .ToListAsync();
+        }
+        public async Task ExportDatabaseScript()
+        {
+            this.DB.Database.GenerateCreateScript();
+        }
+        public async Task DeleteAll()
+        {
+            await Task.Factory
+             .StartNew(() =>
+             {
+                 UserDialogs.Instance
+                     .Confirm(new ConfirmConfig()
+                     {
+                         CancelText = "Oops! No.",
+                         Message = $"Are you sure you want to delete?",
+                         OkText = "Very Sure.",
+                         Title = "Data Issue",
+                         OnAction =
+                         delegate (bool confirm)
+                         {
+                             if (confirm)
+                             {
+                                 this.DB.Database.EnsureDeleted();
+                                 UserDialogs.Instance.Alert("Db Deleted.");
+                             }
+                         }
+                     });
+             });
+        }
+        public async Task<string> ExecuteSqlEmbeddedScripts(string filename, Action<double, uint> action, bool linedelimitted = true)
+        {
+            string ret = "";
             filename = $"{EmbeddedFileRoot}.{filename}";
             if (!string.IsNullOrEmpty(filename))
             {
@@ -375,66 +417,72 @@ namespace VigilantKJV.DataAccess
                 }
 
                 double val = 0; uint unt = (uint)sqlList.Count;
+                await Task.Factory
+                    .StartNew(() =>
+                  {
 
-                //do in pieces
-                if (linedelimitted)//each line is its own sql query
-                {
-                    int chunksize = 100;
-                    int intChunk = 0;
-                    string sql;
-                    bool ok = true;
-                    while (ok && intChunk * chunksize < sqlList.Count)
-                    {
-                        var chunk = sqlList.Skip(intChunk * chunksize).Take(chunksize);
-                        intChunk++;
-                        try
-                        {
-                            sql = string.Join("\n", chunk);
+                      //do in pieces
+                      if (linedelimitted)//each line is its own sql query
+                      {
+                          int chunksize = 100;
+                          int intChunk = 0;
+                          string sql;
+                          bool ok = true;
+                          while (ok && intChunk * chunksize < sqlList.Count)
+                          {
+                              var chunk = sqlList.Skip(intChunk * chunksize).Take(chunksize);
+                              intChunk++;
+                              try
+                              {
+                                  sql = string.Join(" ", chunk);
+                                  var rowsaffected = db.Database.ExecuteSqlRaw(sql);
+                                  ret += "Rows affected: " + rowsaffected + "\n";
+                                  val += (double)rowsaffected;
+                                  action(val, unt);
+                              }
+                              catch (Exception ex)
+                              {
+                                  UserDialogs.Instance
+                                            .Confirm(new ConfirmConfig()
+                                            {
+                                                CancelText = "Forget it.",
+                                                Message = $"The following error occurred:\n {ex}",
+                                                OkText = "Continue",
+                                                Title = "Data Issue",
+                                                OnAction =
+                                            delegate (bool confirm)
+                                            {
+                                                ok = confirm;
+                                            }
+                                            });
+                              }
+                          }
+                      }
+                      else
+                      {
+                          try
+                          {
+                              string sql = string.Join(" ", sqlList);
 
-                            await db.Database.ExecuteSqlRawAsync(sql);
-                            val += (double)chunksize;
-                            action(val, unt);
-                        }
-                        catch (Exception ex)
-                        {
-                            UserDialogs.Instance
-                                    .Confirm(new ConfirmConfig()
-                                    {
-                                        CancelText = "Forget it.",
-                                        Message = $"The following error occurred:\n {ex}",
-                                        OkText = "Continue",
-                                        Title = "Data Issue",
-                                        OnAction =
-                                    delegate (bool confirm)
-                                    {
-                                        ok = confirm;
-                                    }
-                                    });
-                        }
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        string sql = string.Join(" ", sqlList);
-
-                        await db.Database.ExecuteSqlRawAsync(sql);
-                    }
-                    catch (Exception ex)
-                    {
-                        UserDialogs.Instance.Alert($"Error executing sql.\n{ex}");
-                    }
-                }
-
+                              var rowsaffected = db.Database.ExecuteSqlRaw(sql);
+                              ret += "Rows affected: " + rowsaffected + "\n";
+                          }
+                          catch (Exception ex)
+                          {
+                              UserDialogs.Instance.Alert($"Error executing sql.\n{ex}");
+                          }
+                      }
+                  });
             }
+            return ret;
         }
-        public async Task ExecuteSql(string sql, Action<double, uint> action)
+        public async Task<string> ExecuteSql(string sql)
         {
             if (!string.IsNullOrEmpty(sql))
             {
-                await db.Database.ExecuteSqlRawAsync(sql);
+                return "Rows affected:" + await db.Database.ExecuteSqlRawAsync(sql);
             }
+            return "";
         }
         public async Task<bool> ExportDb(string exportPath, Action<double, uint> action, bool toFtp)
         {
@@ -507,15 +555,25 @@ namespace VigilantKJV.DataAccess
             return false;
 
         }
-        public async Task UpdateRecited(Verse item, DateTime? dateTime = null)
+        //public async Task UpdateRecited(Verse item, DateTime? dateTime = null)
+        //{
+        //    DB.Update(item.LastRecited = dateTime ?? DateTime.Now.ToLocalTime());
+        //    await DB.SaveChangesAsync();
+        //}
+        public async Task UpdateRecited(Guid Id, DateTime? dateTime)
         {
-            DB.Update(item.LastRecited = dateTime ?? DateTime.Now.ToLocalTime());
-            await DB.SaveChangesAsync();
-        }
-        public async Task UpdateRecited(Guid Id, DateTime dateTime)
-        {
-            var item = DB.Verse.FirstOrDefaultAsync(x => x.Id == Id);
-            await UpdateRecited(await item, new DateTime?(dateTime));
+            try
+            {
+                if(dateTime == null)
+                    dateTime = DateTime.Now.ToLocalTime();
+                var item = await DB.Verse.FirstOrDefaultAsync(x => x.Id == Id);
+                DB.Update(item.LastRecited = dateTime.Value);
+                await DB.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                UserDialogs.Instance.Alert($"Problem updating last recited time.\n{ex}");
+            }
 
         }
         public void EagerLoad()
