@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="VigilantKJV.Views.LastRecitedView"
+    xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+    xmlns:listview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:behaviors="clr-namespace:VigilantKJV.Behaviors"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="{Binding Title}">
+
+    <ContentPage.Content>
+        <RefreshView Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+            <StackLayout>
+                <ActivityIndicator Color="#cbdf90" IsVisible="{Binding IsBusy}" />
+                <listview:SfListView
+                    x:Name="ItemsCollectionView"
+                    ItemsSource="{Binding Items}"
+                    SelectedItem="{Binding SelectedVerse, Mode=OneWayToSource}"
+                    SelectionMode="Single"
+                    QueryItemSize="ItemsCollectionView_QueryItemSize"
+                  >
+                    <listview:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Frame Padding="1,0"  >
+                                    <Grid Padding="5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="2*" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Label
+                                            Grid.Row="0" 
+                                            BackgroundColor="{StaticResource LabelVerse_HeaderBackground}"
+                                            TextColor="{StaticResource LabelVerse_HeaderText}"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="1"
+                                            HorizontalOptions="FillAndExpand" 
+                                            Text="{Binding FullTitle}" />
+                                        <Label
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            HorizontalOptions="EndAndExpand" 
+                                            Text="{Binding TimeSinceRecited}" />
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            FontSize="Large"
+                                            LineBreakMode="WordWrap" 
+                                            Text="{Binding Text}" />
+                                        <Label
+                                            Grid.Row="2"
+                                            Grid.Column="0"
+                                            HorizontalOptions="FillAndExpand" 
+                                            Text="{Binding sLastRecited}" />
+                                        <Button
+                                            Grid.Row="2"
+                                            Grid.Column="1" 
+                                            Clicked="Button_Clicked"
+                                            HorizontalOptions="FillAndExpand"
+                                            Text="Recited Today">
+                                            <Button.Behaviors>
+                                                <behaviors:LongPressBehavior LongPressed="MyButton_LongPressed" />
+                                            </Button.Behaviors>
+                                        </Button>
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="OnItemSelected" />
+                                        </Grid.GestureRecognizers>
+                                    </Grid>
+                                </Frame>
+                            </ViewCell>
+                        </DataTemplate>
+                    </listview:SfListView.ItemTemplate>
+                </listview:SfListView>
+            </StackLayout>
+        </RefreshView>
+    </ContentPage.Content>
+
+</ContentPage>

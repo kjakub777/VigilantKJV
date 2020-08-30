@@ -31,16 +31,16 @@ namespace VigilantKJV.Views
                 switch (id)
                 {
                     case (int)MenuItemType.Bible:
-                        MenuPages.Add(id, new NavigationPage(new BiblePage()));
+                        MenuPages.Add(id, new NavigationPage(new BibleView()));
                         break;
                     case (int)MenuItemType. Memorized:
-                        MenuPages.Add(id, new NavigationPage(new MemorizedPage()));
+                        MenuPages.Add(id, new NavigationPage(new MemoryVerseGroupCollectionView()));
                         break;
                     case (int)MenuItemType.DbTools:
-                        MenuPages.Add(id, new NavigationPage(new DbToolsPage()));
+                        MenuPages.Add(id, new NavigationPage(new DbToolsView()));
                         break;
                     case (int)MenuItemType.LastRecited:
-                        MenuPages.Add(id, new NavigationPage(new LastRecitedPage()));
+                        MenuPages.Add(id, new NavigationPage(new LastRecitedView()));
                         break;
                     
                     case (int)MenuItemType.About:

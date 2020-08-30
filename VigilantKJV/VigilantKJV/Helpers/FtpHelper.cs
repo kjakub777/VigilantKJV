@@ -21,7 +21,7 @@ namespace VigilantKJV.Helpers
                 using (var client = new WebClient())
                 {
                     client.Credentials = new NetworkCredential(ftpU, ftpPw);
-                    //client.UploadFile(Path.Combine(ftpPath, fileshortname), WebRequestMethods.Ftp.UploadFile, userDB.DbPath);
+                    //client.UploadFile(Path.Combine(ftpPath, fileshortname), WebRequestMethods.Ftp.UploadFile, userDbPath);
                     await Task.Run(() => client.UploadDataAsync(new Uri(Path.Combine(ftpPath, fileshortname)), file));
                 }
                 //FtpWebRequest request = (FtpWebRequest)WebRequest.Create();
@@ -30,7 +30,7 @@ namespace VigilantKJV.Helpers
                 //request.UseBinary = true;
 
                 //if (file == null)
-                //    file = userDB.Database();
+                //    file = userDatabase();
                 ////request.KeepAlive = false;
                 ////request.UsePassive = false;
                 //var requestStream = request.GetRequestStream();
@@ -60,7 +60,7 @@ namespace VigilantKJV.Helpers
         //        request.UseBinary = true;
 
         //        if (file == null)
-        //            file = userDB.Database();
+        //            file = userDatabase();
         //        //request.KeepAlive = false;
         //        //request.UsePassive = false;
         //        var requestStream = request.GetRequestStream();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Migrator.Migrations
+namespace VigilantKJV.Migrations
 {
     public partial class ChangeTestament : Migration
     {

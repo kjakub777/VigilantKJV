@@ -42,21 +42,23 @@ namespace Migrator.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Information")
+                    b.Property<string>("BookName")
+                        .IsRequired()
                         .HasColumnType("nvarchar");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Information")
                         .HasColumnType("nvarchar");
 
                     b.Property<int>("Ordinal")
                         .HasColumnType("int");
 
-                    b.Property<Testament>("Testament")
+                    b.Property<string>("Testament")
+                        .IsRequired()
                         .HasColumnType("string");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Book");
+                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("VigilantKJV.Models.Chapter", b =>
@@ -78,7 +80,7 @@ namespace Migrator.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Chapter");
+                    b.ToTable("Chapters");
                 });
 
             modelBuilder.Entity("VigilantKJV.Models.Verse", b =>
@@ -116,7 +118,7 @@ namespace Migrator.Migrations
 
                     b.HasIndex("ChapterId");
 
-                    b.ToTable("Verse");
+                    b.ToTable("Verses");
                 });
 
             modelBuilder.Entity("VigilantKJV.Models.Chapter", b =>

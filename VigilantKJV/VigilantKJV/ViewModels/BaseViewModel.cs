@@ -13,7 +13,7 @@ using VigilantKJV.Views;
 
 namespace VigilantKJV.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged, IBaseViewModel
+    public class BaseViewModel : FreshMvvm.FreshBasePageModel, INotifyPropertyChanged
     {
 
         bool isBusy = false;
@@ -23,7 +23,7 @@ namespace VigilantKJV.ViewModels
 
         public BaseViewModel()
         {
-           
+
         }
 
         private void OnEmptyChanged(BaseViewModel baseViewModel, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -57,7 +57,7 @@ namespace VigilantKJV.ViewModels
 
             backingStore = value;
             onChanged?.Invoke();
-            OnPropertyChanged(propertyName);
+            RaisePropertyChanged(propertyName);
             return true;
         }
 
@@ -80,17 +80,17 @@ namespace VigilantKJV.ViewModels
             get { return title; }
             set { SetProperty(ref title, value); }
         }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        public void RaisePropertyChangedEvent(PropertyChangedEventArgs e)
         {
-            var changed = PropertyChanged;
-            if (changed == null)
-                return;
-
-            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            RaisePropertyChanged(e.PropertyName);
         }
+        #region INotifyPropertyChanged
+        // public event PropertyChangedEventHandler PropertyChanged;
+        //protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        //{
+        //    var changed = PropertyChanged; 
+        //    changed?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
         #endregion
     }
 }

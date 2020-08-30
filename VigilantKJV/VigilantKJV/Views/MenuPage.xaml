@@ -11,17 +11,18 @@
         <ListView x:Name="ListViewMenu"
                     HasUnevenRows="True"
                    >
-            <!--<d:ListView.ItemsSource>
+            <d:ListView.ItemsSource>
                 <x:Array Type="{x:Type x:String}">
                     <x:String>Item 1</x:String>
                     <x:String>Item 2</x:String>
                 </x:Array>
-            </d:ListView.ItemsSource>-->
+            </d:ListView.ItemsSource>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Grid Padding="10">
                             <Label Text="{Binding Title}" d:Text="{Binding .}" FontSize="20"/>
+                            <Image Source="{Binding Image}" ></Image>
                         </Grid>
                     </ViewCell>
                 </DataTemplate>

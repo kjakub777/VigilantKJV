@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using VigilantKJV.DataAccess;
 using VigilantKJV.Models;
 using VigilantKJV.Services;
 
@@ -17,52 +18,103 @@ namespace VigilantKJV.ViewModels
 {
     public class LastRecitedViewModel : BaseViewModel
     {
-        public DataAccess.DataStore DBAccess { get; set; }
-        public List<(Guid, DateTime)> previousLastReciteds;
+        private List<(int, DateTime)> previousLastReciteds;
+
         public Verse SelectedVerse { get; set; }
+
         public LastRecitedViewModel()
         {
-            DBAccess = new DataAccess.DataStore();
+            data = DataStoreFactory.GetNewDataContext();
             Title = "Last Time Recited";
             Items = new ObservableCollection<Verse>();
             LoadVersesCommand = new Command(async () => await ExecuteLoadVersesCommand());
-            previousLastReciteds = new List<(Guid, DateTime)>();
+            PreviousLastReciteds = new List<(int, DateTime)>();
         }
+
         public ObservableCollection<Verse> Items { get; set; }
+
         public Command LoadVersesCommand { get; set; }
 
-        internal async Task UpdateRecited(Verse item)
+        public List<(int, DateTime)> PreviousLastReciteds
         {
-            previousLastReciteds.Add((item.Id, item.LastRecited));
-            await DBAccess.UpdateRecited(item.Id,null);
-            IsBusy = true;
+            get
+            {
+                if (previousLastReciteds == null)
+                {
+                    previousLastReciteds = new List<(int, DateTime)>();
+                }
+                return previousLastReciteds;
+            }
+            set
+            {
+                previousLastReciteds = value;
+            }
         }
-        internal async Task UpdateRecitedUndo(Verse item)
+
+        internal async Task UpdateRecited(Verse v)
         {
 
-            if (previousLastReciteds.Any(x => x.Item1 == item.Id))
+            try
             {
-                var prev = previousLastReciteds.FirstOrDefault(x => x.Item1 == item.Id);
-                previousLastReciteds.Remove(prev);
-                await DBAccess.UpdateRecited(prev.Item1, prev.Item2);
-                IsBusy = true;
+                PreviousLastReciteds.Add((v.Id, v.LastRecited));
+                await data.UpdateRecited(v);
             }
-            else
+            catch (Exception ex)
             {
-                UserDialogs.Instance.Toast("No previous value stored.");
+                UserDialogs.Instance.Toast($"Error \n{ex}.");
             }
+            ExecuteLoadVersesCommand();
+
         }
-        
+        internal async Task UpdateRecitedUndo()
+        {
+            try
+            {
+                if (PreviousLastReciteds.Any(x => x.Item1 == SelectedVerse.Id))
+                {
+                    var prev = PreviousLastReciteds.FirstOrDefault(x => x.Item1 == SelectedVerse.Id);
+                    await data.UpdateRecited(prev.Item1, prev.Item2);
+                    PreviousLastReciteds.Remove(prev);
+                    IsBusy = true;
+                }
+                else
+                {
+                    UserDialogs.Instance.Toast("No previous value stored.");
+                }
+            }
+            catch (Exception ex)
+            {
+                UserDialogs.Instance.Toast($"Error \n{ex}.");
+            }
+            RaisePropertyChanged(nameof(SelectedVerse));
+        }
+
+        DataAccess.DataStore data;
+
 
         public async Task ExecuteLoadVersesCommand()
         {
             IsBusy = true;
+
+
             try
             {
                 Items.Clear();
-                var vs = await DBAccess.GetLastRecitedAsync();
-                vs.ForEach((v) => Items.Add(v));
+                var vs = await data.GetLastRecitedAsync();
 
+                try
+                {
+                    foreach (var v in vs)
+                    {
+                        Items.Add(v);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    Acr.UserDialogs.UserDialogs.Instance.Alert($"{ex}");
+                    Console.WriteLine($"{ex}");
+                }
             }
             catch (Exception ex)
             {
@@ -72,6 +124,7 @@ namespace VigilantKJV.ViewModels
             {
                 IsBusy = false;
             }
+
         }
     }
 }

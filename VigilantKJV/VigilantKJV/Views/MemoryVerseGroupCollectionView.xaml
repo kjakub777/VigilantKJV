@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="VigilantKJV.Views.MemoryVerseGroupCollectionView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:chipgroup="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+    xmlns:picker="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
+    xmlns:sfButtons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+    xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+    xmlns:listview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+    xmlns:helpers="clr-namespace:VigilantKJV.Helpers"
+    xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout x:Name="bookStack" Padding="1,0,1,0"> 
+                <chipgroup:SfSegmentedControl
+                                    Color="{StaticResource PrimaryDark}"
+                                    BorderColor="{StaticResource PrimaryDark}"
+                                    CornerRadius="10" 
+                                    FontColor="{StaticResource PrimaryLight}"
+                                    HorizontalOptions="CenterAndExpand"
+                                    SegmentCornerRadius="10"
+                                    SegmentHeight="30"
+                                    SelectedIndex="{Binding GroupInt}"
+                                    VisibleSegmentsCount="3">
+                    <sfButtons:SfSegmentedControl.SelectionIndicatorSettings>
+                        <sfButtons:SelectionIndicatorSettings Color="{StaticResource Segment_Selection}" CornerRadius="2" />
+                    </sfButtons:SfSegmentedControl.SelectionIndicatorSettings>
+                    <ListCollection:List x:TypeArguments="x:String">
+                        <x:String>Books</x:String>
+                        <x:String>Date</x:String>
+                        <x:String>None</x:String>
+                    </ListCollection:List>
+                </chipgroup:SfSegmentedControl>
+                <ListView
+                    x:Name="BooksList"
+                    BackgroundColor="{StaticResource PrimaryDark}"
+                    HasUnevenRows="true"
+                    IsGroupingEnabled="True"
+                    IsPullToRefreshEnabled="true"
+                    IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                    ItemsSource="{Binding Items}"
+                    RefreshCommand="{Binding LoadBooksCommand}"
+                    SizeChanged="ListView_OnSizeChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Frame Padding="1,0" SizeChanged="VisualElement_OnSizeChanged">
+                                    <StackLayout
+                                        BackgroundColor="{StaticResource PrimaryLight}"
+                                        Padding="1"
+                                        VerticalOptions="Center">
+                                        <Label  Text="{Binding .Verse.FullTitle}"
+                                                TextColor="{StaticResource LabelVerse_HeaderBackground}" 
+                                                BackgroundColor="{StaticResource LabelVerse_HeaderText}"
+                                                VerticalOptions="CenterAndExpand"
+                                                Margin="5,5,0,0"
+                                                     />
+                                        <Label
+                                            LineBreakMode="WordWrap" 
+                                            Text="{Binding .Verse.Text}" BackgroundColor="{StaticResource LabelVerse_Background}" TextColor="{StaticResource LabelVerse_Text}"/>
+                                        <StackLayout Orientation="Horizontal">
+                                            <StackLayout BackgroundColor="{StaticResource PrimaryDark}">
+                                                <Label 
+                                                    TextColor="{StaticResource LabelVerse_Text}"
+                                                    Text="{Binding LastRecitedCaption  }"  
+                                                    VerticalOptions="Start" />
+                                                <Label 
+                                                    TextColor="{StaticResource LabelVerse_Text}"
+                                                     Text="{Binding sLastRecited}"
+                                                    VerticalOptions="End" />
+                                            </StackLayout>
+                                            <Button
+                                                BackgroundColor="{StaticResource PrimaryDark}"
+                                                Clicked="Button_Clicked"
+                                                HorizontalOptions="FillAndExpand"
+                                                Text="Recited!" 
+                                                TextColor="{StaticResource PrimaryLight}"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Frame>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.GroupHeaderTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Label 
+                                        VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
+                                        Margin="5,5,0,0"
+                                        Text="{Binding Label}" />
+                                    <Image
+                                        x:Name="ImgA"
+                                        Margin="0,0,5,0"
+                                        HeightRequest="32"
+                                        HorizontalOptions="End"
+                                        Source="{Binding StateIcon}"
+                                        WidthRequest="32" />
+                                    <Grid.GestureRecognizers>
+                                        <!--<TapGestureRecognizer Command="{Binding Source={x:Reference currentPage}, Path=BindingContext.RefreshItemsCommand}"  NumberOfTapsRequired="1" CommandParameter="{Binding .}"/>-->
+                                        <TapGestureRecognizer
+                                            Command="{Binding BindingContext.RefreshItemsCommand, Source={x:Reference BooksList}}"
+                                            CommandParameter="{Binding .}"
+                                            NumberOfTapsRequired="1" />
+                                        <!--<TapGestureRecognizer Command="{Binding Source={x:Reference currentPage}, Path=BindingContext.RefreshItemsCommand}"  NumberOfTapsRequired="1" CommandParameter="{Binding .}"/>-->
+                                    </Grid.GestureRecognizers>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.GroupHeaderTemplate>
+                </ListView>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+
+</ContentPage>

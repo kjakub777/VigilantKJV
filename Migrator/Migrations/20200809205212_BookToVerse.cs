@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Migrator.Migrations
+namespace VigilantKJV.Migrations
 {
     public partial class BookToVerse : Migration
     {

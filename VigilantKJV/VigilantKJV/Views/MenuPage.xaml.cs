@@ -12,19 +12,19 @@ namespace VigilantKJV.Views
     [DesignTimeVisible(false)]
     public partial class MenuPage : ContentPage
     {
-      //  public List<HomeMenuItem> MenuItems => menuItems;
+        public List<HomeMenuItem> MenuItems => menuItems;
         MainPage RootPage { get => Application.Current.MainPage as MainPage; }
         List<HomeMenuItem> menuItems;
         public MenuPage()
         {
-            InitializeComponent();
-
+            InitializeComponent(); 
+             
             menuItems = new List<HomeMenuItem>
             {
-                new HomeMenuItem {Id = MenuItemType.Bible, Title="KJV Bible" },
-                new HomeMenuItem {Id = MenuItemType.Memorized, Title="Memory Collection" },
-                new HomeMenuItem {Id = MenuItemType.LastRecited, Title="Last Recited" },
-                new HomeMenuItem {Id = MenuItemType.DbTools, Title="Db Tools" },
+                new HomeMenuItem {Id = MenuItemType.Bible, Title="KJV Bible" ,Image="bible.png"},
+                new HomeMenuItem {Id = MenuItemType.Memorized, Title="Memory Collection",Image="lightbulb.ico" },
+                new HomeMenuItem {Id = MenuItemType.LastRecited, Title="Last Recited",Image="DateTime.png" },
+                new HomeMenuItem {Id = MenuItemType.DbTools, Title="Db Tools",Image="process_accept.ico" },
                 new HomeMenuItem {Id = MenuItemType.About, Title="About" }
             };
 

@@ -17,25 +17,54 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\LazyLoadedPage.cs" />
+    <Compile Remove="ViewModels\GroupedMemoryVerseViewModel.cs" />
+    <Compile Remove="ViewModels\VerseGroupCollectionViewModel_Book.cs" />
+    <Compile Remove="ViewModels\VerseGroupCollectionViewModel_Date.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="CSS\css.css" />
     <EmbeddedResource Remove="Views\ItemsPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="DataAccess\Books - Copy.sql" />
     <None Remove="DataAccess\Books.sql" />
+    <None Remove="DataAccess\Chapters - Copy.sql" />
     <None Remove="DataAccess\Chapters.sql" />
+    <None Remove="DataAccess\CurrentDb.db" />
+    <None Remove="DataAccess\DataAccess.7z" />
     <None Remove="DataAccess\Delete.sql" />
     <None Remove="DataAccess\KJVWHOLE.csv" />
     <None Remove="DataAccess\MostRecentVerses.csv" />
+    <None Remove="DataAccess\SetLastRecited.sql" />
+    <None Remove="DataAccess\SetMemorized - Copy.sql" />
     <None Remove="DataAccess\SetMemorized.sql" />
+    <None Remove="DataAccess\Tables.sql" />
+    <None Remove="DataAccess\Verses - Copy %282%29.sql" />
+    <None Remove="DataAccess\Verses - Copy %282%29.zip" />
+    <None Remove="DataAccess\Verses - Copy.sql" />
     <None Remove="DataAccess\Verses.sql" />
+    <None Remove="DataAccess\View - Copy.sql" />
     <None Remove="DataAccess\view.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="CSS\css.css" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="DataAccess\Delete.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="DataAccess\SetLastRecited.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataAccess\SetMemorized.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataAccess\Tables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="DataAccess\View.sql">
@@ -63,38 +92,93 @@
 
   <ItemGroup>
     <PackageReference Include="Acr.UserDialogs" Version="7.1.0.446" />
+    <PackageReference Include="FreshMvvm" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
     <PackageReference Include="MvvmCross" Version="6.4.2" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
+    <PackageReference Include="Syncfusion.Xamarin.Buttons" Version="18.2.0.54" />
+    <PackageReference Include="Syncfusion.Xamarin.Expander" Version="18.2.0.54" />
+    <PackageReference Include="Syncfusion.Xamarin.SfGauge" Version="18.2.0.54" />
+    <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="18.2.0.54" />
+    <PackageReference Include="Syncfusion.Xamarin.SfParallaxView" Version="18.2.0.54" />
+    <PackageReference Include="Syncfusion.Xamarin.SfPicker" Version="18.2.0.54" />
+    <PackageReference Include="Syncfusion.Xamarin.SfProgressBar" Version="18.2.0.54" />
     <PackageReference Include="Xamarin.Forms" Version="4.5.0.495" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Xamarin.Plugin.FilePicker" Version="2.1.41" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DevExpress.XamarinForms.Charts">
+      <HintPath>C:\Program Files (x86)\DevExpress 20.1\Mobile\DevExpress.XamarinForms.Charts.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XamarinForms.Core">
+      <HintPath>C:\Program Files (x86)\DevExpress 20.1\Mobile\DevExpress.XamarinForms.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XamarinForms.Editors">
+      <HintPath>C:\Program Files (x86)\DevExpress 20.1\Mobile\DevExpress.XamarinForms.Editors.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XamarinForms.Grid">
+      <HintPath>C:\Program Files (x86)\DevExpress 20.1\Mobile\DevExpress.XamarinForms.Grid.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XamarinForms.Navigation">
+      <HintPath>C:\Program Files (x86)\DevExpress 20.1\Mobile\DevExpress.XamarinForms.Navigation.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XamarinForms.Scheduler">
+      <HintPath>C:\Program Files (x86)\DevExpress 20.1\Mobile\DevExpress.XamarinForms.Scheduler.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="DataAccess\SetLastRecited.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Update="App.xaml.cs">
       <DependentUpon>App.xml</DependentUpon>
     </Compile>
-    <Compile Update="Views\DbToolsPage.xaml.cs">
-      <DependentUpon>DbToolsPage.xaml</DependentUpon>
+    <Compile Update="Views\BibleView.xaml.cs">
+      <DependentUpon>BibleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DbToolsView.xaml.cs">
+      <DependentUpon>DbToolsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\LastRecitedView.xaml.cs">
+      <DependentUpon>LastRecitedView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MasterView.xaml.cs">
+      <DependentUpon>MasterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MemoryVerseGroupCollectionView.xaml.cs">
+      <DependentUpon>MemoryVerseGroupCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\VerseView.xaml.cs">
+      <DependentUpon>VerseView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Views\BiblePage.xaml">
+    <EmbeddedResource Update="Views\BibleGrid.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\DbToolsPage.xaml">
+    <EmbeddedResource Update="Views\BibleView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\LastRecitedPage.xaml">
+    <EmbeddedResource Update="Views\DbToolsView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\MemorizedPage.xaml">
+    <EmbeddedResource Update="Views\LastRecitedView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\VerseDetailPage.xaml">
+    <EmbeddedResource Update="Views\MemoryVerseGroupCollectionView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MenuPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\VerseView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

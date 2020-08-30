@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="VigilantKJV.Views.VerseView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:behaviors="clr-namespace:VigilantKJV.Behaviors"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ContentPage.Content>
+        <StackLayout
+            Padding="15"
+            Spacing="20" >
+            <Label
+                FontSize="Title" HorizontalOptions="CenterAndExpand" 
+                Text="{Binding Verse.FullTitle, Mode=OneWay}" />
+            <Label
+                d:Text="Item description"
+                FontSize="Large" 
+                Text="{Binding Verse.Text, Mode=OneWay}" />
+            <StackLayout>
+                <StackLayout Orientation="Horizontal">                
+                    <Label
+                        FontSize="Large"
+                        HorizontalOptions="CenterAndExpand"
+                        Text="{Binding LastRecitedCaption  }" />
+                </StackLayout>
+                <Button
+                    Clicked="Recited_Clicked"
+                    HorizontalOptions="FillAndExpand"
+                    Text="Recite!"
+                    VerticalOptions="EndAndExpand">
+                    <Button.Behaviors>
+                        <behaviors:LongPressBehavior LongPressed="MyButton_LongPressed" />
+                    </Button.Behaviors>
+                </Button>
+            </StackLayout>
+            <Label
+                FontSize="Large"
+                HorizontalOptions="CenterAndExpand"
+                Text="Memorized" />
+            <CheckBox
+                CheckedChanged="CheckBox_CheckedChanged"
+                HorizontalOptions="CenterAndExpand"
+                IsChecked="{Binding IsMemorized}"
+                VerticalOptions="StartAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>

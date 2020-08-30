@@ -10,123 +10,322 @@ using VigilantKJV.Views;
 using System.Linq;
 using Xamarin.Forms.Internals;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Dynamic;
 using VigilantKJV.Services;
+using VigilantKJV.DataAccess;
+using Acr.UserDialogs;
+using MvvmCross.Core;
+using System.Collections.Immutable;
+using System.Reactive.Linq;
+using Xamarin.Forms.Xaml;
 
 namespace VigilantKJV.ViewModels
 {
     public class BibleViewModel : BaseViewModel
     {
-
-        public DataAccess.DataStore DBAccess { get; set; }
+        #region Vars
         Book book;
 
         Chapter chapter;
-        string testament;
+        private Xamarin.Forms.Color currentColorGradient = Xamarin.Forms.Color.Transparent;
 
-        public BibleViewModel()
-        {
-            DBAccess = new DataAccess.DataStore();
-            Title = "The True Word (kjv)";
-            Books = new ObservableCollection<Book>();
-            Chapters = new ObservableCollection<Chapter>();
-            Verses = new ObservableCollection<Verse>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadBooksCommand());
+        DataAccess.DataStore data;
+        bool isBusy;
+        int lastBookid;
+        public double MinS = 0, MaxS = 6;
 
-            MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
-            {
-                var newItem = item as Item;
-                //   Items.Add(newItem);
-                // await DataStore.AddItemAsync(newItem);
-            });
-
-            PropertyChanged += BibleViewModel_PropertyChanged;
-            Testament = "Old";
-        }
+        bool newTestamentChecked = true;
+        bool oldTestamentChecked = true;
+        private double percentSlider;
+        //intlastChapterid = Guid.Empty;
 
         double sliderVal = 0;
+        int testamentInt;
+        string testamentLabel;
+        TestamentName testamentName;
+        Verse verse;
+
+        public Book Book
+        {
+            get => this.book;
+            set
+            {
+                if (this.book == value)
+                {
+                    return;
+                }
+
+                this.book = value;
+                RaisePropertyChanged();
+                //if (update)
+                //    lastBookid = value.Id;
+
+            }
+        }
+        public ObservableCollection<Book> Books { get; set; }
+        public Chapter Chapter
+        {
+            get => this.chapter;
+            set
+            {
+                if (this.chapter == value)
+                {
+                    return;
+                }
+
+                this.chapter = value;
+                this.RaisePropertyChanged(nameof(Chapter));
+                //if (update)
+                //    lastChapterid = value.Id;
+            }
+        }
+        public ObservableCollection<Chapter> Chapters { get; set; }
+
+        public Command LoadItemsCommand { get; set; }
+
+        public bool NewTestamentChecked
+        {
+            get
+            {
+                return this.newTestamentChecked;
+            }
+
+            set
+            {
+                if (this.newTestamentChecked == value)
+                {
+                    return;
+                }
+
+                this.newTestamentChecked = value;
+                RaisePropertyChanged();
+            }
+        }
+        public bool OldTestamentChecked
+        {
+            get { return oldTestamentChecked; }
+            set
+            {
+                if (oldTestamentChecked == value)
+                {
+                    return;
+                }
+
+                oldTestamentChecked = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double PercentSlider
+        {
+            get => percentSlider; set
+            {
+                if (percentSlider == value)
+                {
+                    return;
+                }
+
+                percentSlider = value;
+                RaisePropertyChanged();
+            }
+        }
         public double SliderVal
         {
             get => this.sliderVal;
             set
             {
-                Console.WriteLine($"{value}");
+                if (this.sliderVal == value)
+                {
+                    return;
+                }
+                // Console.WriteLine($"{value}");
                 this.sliderVal = value;
-                TestamentToggle(value);
+                SetTestament(value);
             }
         }
-        internal void TestamentToggle(double val)
+
+        public Command SwipeCommand => new Command(() => ExecuteSwipeCommand());
+        public int TestamentInt
         {
-            //decimal, 0 - 1, break in thirds
-            double onethird = .3333333334;
-            if (val < onethird)
+            get
             {
-                Testament = "Old";
+                return this.testamentInt;
             }
-            else if (sliderVal < 2 * onethird)
+            set
             {
-                Testament = "Both";
+                if (this.testamentInt == value)
+                {
+                    return;
+                }
+                try
+                {
+
+                    var tn = (TestamentName)value;
+                    TestamentName = tn;
+                }
+                catch (Exception ex)
+                {
+
+                }
+                this.testamentInt = value;
+                RaisePropertyChanged();
             }
-            else
+        }
+        public string TestamentLabel
+        {
+            get => this.testamentLabel; set
             {
-                Testament = "New";
+                if (this.testamentLabel == value)
+                {
+                    return;
+                }
+
+                this.testamentLabel = value;
+                RaisePropertyChanged();
             }
-            //switch (Testament)
+        }
+        public TestamentName TestamentName
+        {
+            get => this.testamentName;
+            set
+            {
+                if (value != this.testamentName)
+                {
+                    TestamentLabel = "" + value;
+                    this.testamentName = value;
+                    this.RaisePropertyChanged(nameof(this.TestamentName));
+                    //  ExecuteLoadBooksCommand();
+                }
+            }
+        }
+
+        public Verse Verse
+        {
+            get => this.verse;
+            set
+            {
+                if (this.verse == value)
+                {
+                    return;
+                }
+
+                this.verse = value;
+                this.RaisePropertyChanged(nameof(this.Verse));
+            }
+        }
+
+        public ObservableCollection<Verse> Verses { get; set; }
+        #endregion
+
+        public BibleViewModel()
+
+        {
+
+            Title = "The True Word (kjv)";
+            Books = new ObservableCollection<Book>();
+            Chapters = new ObservableCollection<Chapter>();
+            Verses = new ObservableCollection<Verse>();
+            LoadItemsCommand = new Command(async () => await ExecuteLoadBooksCommand());
+            this.PropertyChanged += BibleViewModel_PropertyChanged;
+            //MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
             //{
-            //    case "Old": Testament = "New"; break;
-            //    case "New": Testament = "Both"; break;
-            //    case "Both": Testament = "Old"; break;
-            //}
-        }
-        internal void TestamentToggle()
-        {
-            switch (Testament)
-            {
-                case "Old": Testament = "New"; break;
-                case "New": Testament = "Both"; break;
-                case "Both": Testament = "Old"; break;
-            }
-        }
+            //    var newItem = item as Item;
+            //    //   Items.Add(newItem);
+            //    // await DataStore.AddItemAsync(newItem);
+            //});
 
-        private void BibleViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Testament))
-            {
-                ExecuteLoadBooksCommand();
-            }
-            else if (e.PropertyName == nameof(this.Book))
-            {
-                ExecuteLoadChaptersCommand();
-            }
-            else if (e.PropertyName == nameof(this.Chapter))
-            {
-                ExecuteLoadVersesCommand();
-            }
-        }
-
-        async Task ExecuteLoadBooksCommand()
-        {
-            IsBusy = true;
 
             try
             {
-                // var testamentvalue = (Testament)Enum.Parse(typeof(Testament), this.Testament);
-                Books.Clear();//        Testament =(Testament) Enum.Parse(typeof(Testament),testament)
-                var books = await Task.FromResult<IOrderedQueryable<Book>>(DBAccess.DB.Book
-                    .Where(x => x.Testament == this.Testament || this.Testament == "Both")
-                    .Distinct()
-                    .Include(b => b.Chapters)
-                    .ThenInclude(c => c.Verses)
-                    .OrderBy(x => x.Ordinal));
+                data = DataStoreFactory.GetNewDataContext();
+
+
+                TestamentName = TestamentName.Old;// = data.Testament.First();
+            }
+            catch (Exception ex)
+            {
+                Acr.UserDialogs.UserDialogs.Instance.Alert($"{ex}");
+                Console.WriteLine($"{ex}");
+            }
+
+        }
+
+        #region Meths
+        private async void BibleViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TestamentName))
+            {
+                await ExecuteLoadBooksCommand();
+            }
+            else if (e.PropertyName == nameof(this.Book))
+            {
+                await ExecuteLoadChaptersCommand();
+            }
+            else if (e.PropertyName == nameof(this.Chapter))
+            {
+                await ExecuteLoadVersesCommand();
+            }
+        }
+        void Context_StateChanged(object sender, EntityStateChangedEventArgs e)
+        {
+            try
+            {
+
+                Console.WriteLine($"{e.Entry} { e.OldState}  { e.NewState }");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("" + ex);
+            }
+        }
+        void Context_Tracked(object sender, EntityTrackedEventArgs e)
+        {
+            Console.WriteLine("Tracking " + e.Entry);
+            foreach (var item in e.Entry.CurrentValues.Properties)
+            {
+                try
+                {
+
+                    Console.WriteLine($"{item.Name}  ");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("" + ex);
+                }
+            }
+        }
+        async Task ExecuteLoadBooksCommand()
+        {
+            IsBusy = true;
+            try
+            {
+
+
+                Console.WriteLine($"This many  { data.Verses.Count()}");
+                Books.Clear();
+                IOrderedQueryable<Book> books;
+                if (TestamentName == TestamentName.Both)
+                    books = await Task.FromResult<IOrderedQueryable<Book>>(data.Books
+                        .Include(x => x.Chapters)
+                        .ThenInclude(x => x.Verses)
+                        .OrderBy(x => x.Ordinal));
+                else
+                    books = await Task.FromResult(data.Books.Where(x => x.Testament.TestamentName == this.TestamentName)
+                        .Include(x => x.Chapters)
+                        .ThenInclude(x => x.Verses)
+                        .OrderBy(x => x.Ordinal));
+
+
                 foreach (var item in books)
                 {
                     Books.Add(item);
-
                 }
                 if (Books.Count > 0 && (Book == null || !Books.Contains(Book)))//probably switched testaments
                 {
                     Book = Books[0];
                 }
+
             }
             catch (Exception ex)
             {
@@ -137,41 +336,34 @@ namespace VigilantKJV.ViewModels
                 IsBusy = false;
             }
         }
-        Guid? lastBookid = Guid.Empty;
-        Guid? lastChapterid = Guid.Empty;
-        public async Task HandleVerseTapped()
-        {
-            //var layout = (BindableObject)sender;
-            //var item = (Verse)layout.BindingContext;
-            //await Xamarin.Forms.INavigation.PushAsync(new VerseDetailPage(new VerseViewModel(item)));
-            //viewmodel.IsBusy = true;
-            //UserDialogs.Instance.Toast($" {sender} {item}");
-        }
         async Task ExecuteLoadChaptersCommand()
         {
             IsBusy = true;
 
             try
             {
-                await Task.Factory
-                    .StartNew(() =>
-                    {
-                        if (Book?.Id == lastBookid)
-                        {
-                            //not reloading the same set!
-                            return;
-                        }
-                        Chapters.Clear();
-                        Book?.Chapters?.OrderBy(x => x.Number).ForEach((x) => Chapters.Add(x));
-                        //can't have a chapter loaded that isnt in this book
-                        if (Chapter == null ||  //has to be a member of the collectiom
-                            !Chapters.Any(x => x.Id == Chapter.Id))
-                        {
-                            Chapter = Chapters.FirstOrDefault();
-                        }
-                        lastBookid = Book.Id;
-                    });
+                if (Book == null || Book.Id == lastBookid)
+                {
+                    //not reloading the same set!
+                    return;
+                }
+                Chapters.Clear();
 
+                var v = await Task.FromResult(Book.Chapters.OrderBy(x => x.Number));
+                foreach (var ch in v)
+                {
+
+                    Chapters.Add(ch);
+
+                }
+
+                //can't have a chapter loaded that isnt in this book
+                if (Chapter == null)
+                {
+                    Chapter = Chapters.FirstOrDefault();
+                }
+
+                lastBookid = Book.Id;
             }
             catch (Exception ex)
             {
@@ -188,12 +380,15 @@ namespace VigilantKJV.ViewModels
 
             try
             {
-                await Task.Factory
-                    .StartNew(() =>
-                    {
-                        Verses.Clear();
-                        Chapter?.Verses.OrderBy(v => v.Number).ForEach((x) => Verses.Add(x));
-                    });
+                if (Chapter == null)
+                    return;
+                Verses.Clear();
+                var vs = await Task.FromResult(Chapter.Verses.OrderBy(x => x.Number));
+
+                foreach (var v in vs)
+                {
+                    Verses.Add(v);
+                }
             }
             catch (Exception ex)
             {
@@ -204,55 +399,93 @@ namespace VigilantKJV.ViewModels
                 IsBusy = false;
             }
         }
-        public Book Book
+
+        private void ExecuteSwipeCommand()
         {
-            get => this.book;
-            set
-            {
-                bool update = value != null && value != book;
-
-                SetProperty(ref this.book, value);
-                //if (update)
-                //    lastBookid = value.Id;
-
-            }
+            UserDialogs.Instance.Toast($"Swiped!! {IsBusy}");
         }
-        public ObservableCollection<Book> Books { get; set; }
-        public Chapter Chapter
-        {
-            get => this.chapter;
-            set
-            {
-                bool update = value != null && value != chapter;
 
-                SetProperty(ref this.chapter, value);
-                //if (update)
-                //    lastChapterid = value.Id;
-            }
-        }
-        public ObservableCollection<Chapter> Chapters { get; set; }
-        public Command LoadItemsCommand { get; set; }
-        public string Testament
+
+        public async Task HandleVerseTapped(Verse v)
         {
-            get => "" + this.testament;
-            set
+            try
             {
-                if (value != "" + this.testament)
+                if (v != null)
                 {
-                    SetProperty<string>(ref this.testament,
-                        value,
-                        nameof(this.Testament));
-                    //  ExecuteLoadBooksCommand();
+                    var ent = data.Entry(v);
+                    ent.Reload();
+                    //ent.State = EntityState.Modified;
+                    var vsl = ent.GetDatabaseValues();
+                    data.Attach(v);
+                    v.IsMemorized = true;
+                    v.LastRecited = DateTime.Now.AddDays(100);
+                    data.Update(v);
+                    await data.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Acr.UserDialogs.UserDialogs.Instance.Alert($"{ex}");
+                Console.WriteLine($"{ex}");
+            }
+        }
+        public async Task RefreshCurrent()
+        {
+
+            var lastVerse = Verse;
+            var lastBook = Book;
+            var lastChapter = Chapter;
+            await ExecuteLoadBooksCommand();
+            if (lastVerse != null)
+            {
+                Book = lastVerse.Book;
+                Chapter = lastVerse.Chapter;
+                Verse = lastVerse;
+            }
+            else
+            {
+                if (lastBook != null)
+                {
+                    Book = lastBook;
+                    Verse = lastVerse;
+                }
+                if (lastChapter != null)
+                {
+                    Chapter = lastChapter;
                 }
             }
         }
 
-        public ObservableCollection<Verse> Verses { get; set; }
-        Verse verse;
-        public Verse Verse
+        internal void SetSlider(double v)
         {
-            get => this.verse;
-            set => SetProperty(ref this.verse, value, nameof(this.Verse));
+            SliderVal = v;
         }
+        private void SetTestament(double val)
+        {
+            if (val < 2)
+            {
+                TestamentName = TestamentName.Old;
+            }
+            else if (val <= 4)
+            {
+                TestamentName = TestamentName.Both;
+            }
+            else
+            {
+                TestamentName = TestamentName.New;
+            }
+        }
+        public async Task SetMemorizedAsync(Verse v)
+        {
+            if (v != null)
+            {
+                data.Update(v);
+                v.IsMemorized = !v.IsMemorized;
+                await data.SaveChangesAsync();
+                Verse = v;
+            }
+        }
+        #endregion
     }
 }

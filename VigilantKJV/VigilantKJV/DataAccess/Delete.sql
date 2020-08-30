@@ -1,2 +1,2 @@
-Delete from book;
+Delete from verses;
  

@@ -1,4 +1,11 @@
-﻿using System;
+using Syncfusion.XForms.iOS.Buttons;
+using Syncfusion.XForms.iOS.Expander;
+using Syncfusion.SfGauge.XForms.iOS;
+using Syncfusion.ListView.XForms.iOS;
+using Syncfusion.SfPicker.XForms.iOS;
+using Syncfusion.XForms.iOS.ProgressBar;
+using Syncfusion.XForms.iOS.ParallaxView;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,7 +29,14 @@ namespace VigilantKJV.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            global::Xamarin.Forms.Forms.Init();
+global::Xamarin.Forms.Forms.Init();
+SfSegmentedControlRenderer.Init();
+SfExpanderRenderer.Init();
+SfGaugeRenderer.Init();
+SfListViewRenderer.Init();
+SfPickerRenderer.Init();
+SfLinearProgressBarRenderer.Init();
+SfParallaxViewRenderer.Init();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);

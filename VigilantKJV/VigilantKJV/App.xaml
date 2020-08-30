@@ -1,23 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Application xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             x:Class="VigilantKJV.App">
+<Application
+    x:Class="VigilantKJV.App"
+     xmlns:syncCore="clr-namespace:Syncfusion.XForms.Themes;assembly=Syncfusion.Core.XForms"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:helpers="clr-namespace:VigilantKJV.Helpers"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
 
     <Application.Resources>
-        <ResourceDictionary>
+        <syncCore:SyncfusionThemeDictionary>
+            <syncCore:SyncfusionThemeDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <helpers:NegateBooleanConverter x:Key="inverter" />
+                    <helpers:BooleanColorConverter x:Key="booltocolor" />
+                    <helpers:GetGradientColorConverter x:Key="gradient" />
+ 
+                    <x:String x:Key="SfPickerTheme">CustomTheme</x:String>
+                    <Color x:Key="SfPickerBackgroundColor">#F0F1DA</Color>
+                    <Color x:Key="SfPickerBorderColor">#5B8086</Color>
+                    <Color x:Key="ChipGroupSegmentBackground">#F0F1DA</Color>
+                    <Color x:Key="ChipText">#F0F1DA</Color>
+                    <Color x:Key="MainListBackGround">#5B8086</Color>
+
+                    <Color x:Key="PrimaryDark">#F1F8FF</Color>
+                    <Color x:Key="PrimaryLight">#013C6C</Color>
+
+                    <Color x:Key="LabelVerse_HeaderText">#013C6C</Color>
+                    <Color x:Key="LabelVerse_HeaderBackground">#F1F8FF</Color>
+                    <Color x:Key="LabelVerse_Text">#013C6C</Color>
+                    <Color x:Key="LabelVerse_Background">#F1F8FF</Color>
+                    <Color x:Key="Label_MemorizedHighlight">#89FDA6</Color>
+
+                    <Color x:Key="NavigationPrimary">#026CC3</Color>
+                    <Color x:Key="NavigationText">#FDF7C9</Color>
+                    <Color x:Key="Button_Border3">#F4F445</Color>
+                    <Color x:Key="Button_Border2">#43F49C</Color>
+                    <Color x:Key="Button_Border1">#4343F4</Color>
+                    <Color x:Key="Button_Border4">#7E43F4</Color>
+                    <Color x:Key="ProgressAndHighlightColor">#43F443</Color>
+
+
+                    <Color x:Key="Segment_Selection">#7DC4FE</Color>
+                    <Color x:Key="ChipBackground">#04AEA0</Color>
+                </ResourceDictionary>
+            </syncCore:SyncfusionThemeDictionary.MergedDictionaries>
+        </syncCore:SyncfusionThemeDictionary>
+        <!--<ResourceDictionary>-->
             <!--Global Styles-->
             <!--<Color x:Key="NavigationPrimary">#607231</Color>
             <Color x:Key="NavigationText">#607231</Color>
             <Color x:Key="Picker_Title">#151909</Color>
-            <Color x:Key="Picker_Background">#EEE3C4</Color>
-            <Color x:Key="Label_VerseBackground">#B7B2A4</Color>
-            <Color x:Key="Label_VerseText">#2E311C</Color>
+            <Color x:Key="Picker_HeaderBackground">#EEE3C4</Color>
+            <Color x:Key="LabelVerse_Background">#B7B2A4</Color>
+            <Color x:Key="LabelVerse_Text">#2E311C</Color>
             <Color x:Key="StackLayout_Background">#2E311C</Color>
             <Color x:Key="Label_HeaderBackground">#151909</Color>
-            <Color x:Key="Label_HeaderText">#B7B2A4</Color>
+            <Color x:Key="LabelVerse_HeaderText">#B7B2A4</Color>
             <Color x:Key="Page_Background">#41494F</Color>
             <Color x:Key="ProgressAndHighlightColor">LightGreen</Color>
             <Color x:Key="Button_RecitedBackground">#849D43</Color>
@@ -27,75 +67,27 @@
     <TextBlock Text=" " FontFamily="Calibri" FontSize="92" Foreground="#FF000000" Canvas.Left="274" Canvas.Top="-0.596666666666678" />
   </Canvas>
 </Viewbox>
+            
+            SyncPrimaryColor	Background color of header in SfPicker.
+
+SyncPrimaryLightColor	Color of SelectedItem's text in SfPicker.
+
+SyncPrimaryForegroundColor	Color of Header's text in SfPicker.
+
+SfPickerUnselectedItemTextColor	Color of UnSelectedItem's text in SfPicker.
+
+SfPickerColumnHeaderTextColor	Color of column header's text in SfPicker.
+
+SfPickerColumnHeaderBackgroundColor	Background color of theColumn header in SfPicker.
+
+SfPickerSelectionBackgroundColor	Background color of the selected item in SfPicker.
+
+SfPickerBackgroundColor  	Background color of the SfPicker.
+
+SfPickerBorderColor   	Border color of the SfPicker. 
 -->
-          <Color x:Key="NavigationPrimary">#3d5a80</Color>
-          <Color x:Key="NavigationText">#f8f9fa</Color>
-          <Color x:Key="Picker_Title">#FCFAEE</Color>
-          <Color x:Key="Picker_Background">#ee6c4d</Color>
-          <Color x:Key="Label_VerseBackground">#f5cb5c</Color>
-          <Color x:Key="Label_VerseText">#333533</Color>
-          <Color x:Key="StackLayout_Background">#48585D</Color>
-          <Color x:Key="Label_HeaderBackground">#eae2b7</Color>
-          <Color x:Key="Label_HeaderText">#003049</Color>
-          <Color x:Key="Page_Background">#48585D</Color>
-          <Color x:Key="ProgressAndHighlightColor">#80ffdb</Color>
-          <Color x:Key="Button_RecitedBackground">#98C1D9</Color>
-          <Color x:Key="Button_RecitedBorder">#FCA311</Color>
-          <Color x:Key="Boxview_VerseBackground">#FFFFFF</Color>
-          <Color x:Key="EntryBackground">#14213D</Color>
-          <Color x:Key="EntryText">#FCA311</Color> 
-            <Style TargetType="NavigationPage">
-                <Setter Property="HeightRequest" Value="75"></Setter>
-                <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationPrimary}" />
-                <Setter Property="BarTextColor" Value="{StaticResource NavigationText}" />
-            </Style>
-            <Style x:Key="PickerStyle" TargetType="Picker">
-                <Setter Property="FontSize" Value="15" />
-                <Setter Property="Margin"   Value="1,10,1,10" />
-                <Setter Property="HeightRequest" Value="75" />
-                <Setter Property="TitleColor" Value="{StaticResource Picker_Title}" />
-                <Setter Property="BackgroundColor" Value="{StaticResource Picker_Background}" />
-                <Setter Property="HorizontalOptions" Value="Fill" />
-                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
-                <Setter Property="Margin" Value="0,2,0,0" />
-            </Style>
-            <Style x:Key="RecitedRecently"  TargetType="Button">
-                <Setter Property="BackgroundColor" Value="{StaticResource StackLayout_Background}" />
-            </Style>
-            <!--stack layout back 676151-->
-            <Style x:Key="StackLayoutStyle" TargetType="StackLayout">
-                <Setter Property="BackgroundColor" Value="{StaticResource StackLayout_Background}" />
-            </Style>
-            <Style x:Key="Label_VerseStyle" TargetType="Label">
-                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
-                <Setter Property="FontFamily" Value="Comic Sans MS" />
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="BackgroundColor" Value="{StaticResource Label_VerseBackground}" />
-                <Setter Property="TextColor" Value="{StaticResource Label_VerseText}" />
-                <Setter Property="VerticalTextAlignment" Value="Center" />
-                <Setter Property="VerticalOptions" Value="FillAndExpand" />
-            </Style>
-            <Style x:Key="Label_LastRecitedStyle" TargetType="Label">
-                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
-                <Setter Property="FontFamily" Value="Comic Sans MS" />
-                <Setter Property="FontSize" Value="11" />
-                <Setter Property="BackgroundColor" Value="{StaticResource Label_VerseBackground}" />
-                <Setter Property="TextColor" Value="{StaticResource Label_VerseText}" />
-                <Setter Property="VerticalTextAlignment" Value="Center" />
-                <Setter Property="VerticalOptions" Value="FillAndExpand" />
-                <Setter Property="Margin" Value="3,7,3,7" />
-            </Style>
-            <Style x:Key="Label_HeaderStyle" TargetType="Label">
-                <Setter Property="BackgroundColor" Value="{StaticResource Label_HeaderBackground}" />
-                <Setter Property="Padding" Value="5,5,5,5" />
-                <Setter Property="TextColor" Value="{StaticResource Label_HeaderText}" />
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="FontSize" Value="18" />
-                <Setter Property="FontFamily" Value="Comic Sans MS" />
-                <Setter Property="VerticalTextAlignment" Value="Center" />
-                <Setter Property="VerticalOptions" Value="FillAndExpand" />
-            </Style>
-        </ResourceDictionary>
+         
+        <!--</ResourceDictionary>-->
     </Application.Resources>
-    
+
 </Application>

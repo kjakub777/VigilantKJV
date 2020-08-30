@@ -8,6 +8,6 @@ namespace VigilantKJV.Models
     {
 
        string FriendlyLabel { get; }
-        Guid Id { get;  set;}
+        int Id { get;  set;}
     }
 }

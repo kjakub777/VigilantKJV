@@ -18,26 +18,54 @@ namespace VigilantKJV.ViewModels
     public class DbToolsViewModel : BaseViewModel
     {
         public DataAccess.DataStore DBAccess { get; set; }
+
         string exportPath;
 
 
         string importPath;
 
-        public bool IsSqlFiles { get; set; } = true;
-        public string SqlEditorText { get; set; }
-        public string SqlFilePick { get; set; }
+        bool breakSqlIntoChunks = true;
+
+        public bool BreakSqlIntoChunks
+        {
+            get => this.breakSqlIntoChunks;
+            set => SetProperty(ref this.breakSqlIntoChunks, value);
+        }
+
+        string sqlEditorText;
+        public Command DatabaseActivityCommand { get; set; }
+        public string SqlEditorText { get => this.sqlEditorText; set => SetProperty(ref this.sqlEditorText, value); }
+
+        string sqlFilePick;
+        public string SqlFilePick
+        {
+            get => this.sqlFilePick;
+            set => SetProperty(ref this.sqlFilePick, value);
+        }
+
         private bool isInProgress;
         int position;
         private bool upFtp;
-        public Command ClearDbCommand;
-        public Command ExportDbCommand;
-        public Command ImportCsvDbCommand;
-        public Command ImportDbCommand;
+        bool inQuery;
+
+        public bool InQuery
+        {
+            get => this.inQuery;
+            set
+            {
+                if (this.inQuery == value)
+                {
+                    return;
+                }
+
+                SetProperty(ref this.inQuery, value);
+            }
+        }
 
         public DbToolsViewModel()
         {
             DBAccess = new DataAccess.DataStore();
-            //    ImportDbCommand = new Command(async () => await ExecuteImportDbCommand());
+            DatabaseActivityCommand = new Command(() => ExecuteDatabaseActivityCommand());
             //ExportDbCommand = new Command(async () => await ExecuteExportDbCommand()); 
             //    ClearDbCommand = new Command(async () => await ExecuteClearDbCommand()); 
             //    ImportCsvDbCommand = new Command(async () => await ExecuteImportCsvDbCommand()); 
@@ -67,35 +95,83 @@ namespace VigilantKJV.ViewModels
                 UserDialogs.Instance.Alert($"An error occurred while attempting to clear Db:\n{ex}");
                 return false;
             }
-
             finally
             {
                 IsInProgress = false;
+            }
+        }
 
+        internal async Task SetMemorizedFromCSV(Action<double, uint> action)
+        {
+            IsInProgress = true;
+            try
+            {
+                await Task.Factory.StartNew(async () => await DBAccess.SetMemorizedDB(action));
+            }
+            catch (Exception ex)
+            {
+                UserDialogs.Instance.Alert($"An error occurred:\n{ex}");
+
+            }
+            finally
+            {
+                IsInProgress = false;
             }
         }
 
         public async Task ExecuteSqlEmbedded(string filename, Action<double, uint> action)
         {
-            string[] arr;
-            if (CheckExistingFirst && (arr = new string[] { "Books.sql", "Chapters.sql", "Verses.sql" }).Contains(filename))
+            IsInProgress = true;
+            try
             {
-                filename = filename.Replace(".sql", "Check.sql");
+                await Task.Factory
+                    .StartNew(async () => SqlEditorText = await DBAccess.ExecuteSqlEmbeddedScripts(filename, action, BreakSqlIntoChunks));
             }
+            catch (Exception ex)
+            {
+                UserDialogs.Instance.Alert($"An error occurred:\n{ex}");
 
-            await Task.Factory.StartNew(async () => SqlEditorText = await DBAccess.ExecuteSqlEmbeddedScripts(filename, action));
+            }
+            finally
+            {
+                IsInProgress = false;
+            }
+        }
+        public void ExecuteDatabaseActivityCommand()
+        {
+            UserDialogs.Instance.Toast($"Yaya it worked!!");
+        }
+        bool isSqlFiles;
+        public bool IsSqlFiles
+        {
+            get => this.isSqlFiles;
+            set => SetProperty(ref this.isSqlFiles, value);
         }
         public async Task ExecuteSql(Action<double, uint> action)
         {
-            if (IsSqlFiles)
+            IsInProgress = true;
+            try
             {
-                await ExecuteSqlEmbedded(SqlFilePick, action);
+                if (IsSqlFiles)
+                {
+                    await ExecuteSqlEmbedded(SqlFilePick, action);
+                }
+                else if (!string.IsNullOrEmpty(SqlEditorText))
+                {
+                    await Task.Factory.StartNew(async () => await DBAccess.ExecuteSql(SqlEditorText));
+                }
             }
-            else if (!string.IsNullOrEmpty(SqlEditorText))
+            catch (Exception ex)
             {
-                await Task.Factory.StartNew(async () => SqlEditorText = await DBAccess.ExecuteSql(SqlEditorText));
+                UserDialogs.Instance.Alert($"An error occurred:\n{ex}");
+
+            }
+            finally
+            {
+                IsInProgress = false;
             }
         }
+
         public async Task<bool> ExportDb(Action<double, uint> action)
         {
             IsInProgress = true;
@@ -115,6 +191,7 @@ namespace VigilantKJV.ViewModels
                 IsInProgress = false;
             }
         }
+
         public async Task<bool> ImportDb(Action<double, uint> action)
         {
             IsInProgress = true;
@@ -134,6 +211,7 @@ namespace VigilantKJV.ViewModels
                 IsInProgress = false;
             }
         }
+
         public async Task<bool> ImportDbFromCsv(Action<double, uint> action)
         {
             IsInProgress = true;
@@ -160,25 +238,29 @@ namespace VigilantKJV.ViewModels
 
             set => SetProperty<string>(ref this.exportPath, value, nameof(ExportPath));
         }
+
         public string ImportPath
         {
             get => this.importPath;
 
-            set => SetProperty<string>(ref this.importPath, value,
-                nameof(ImportPath));
+            set => SetProperty<string>(ref this.importPath, value, nameof(ImportPath));
         }
+
         public bool CheckExistingFirst { get; set; }
-        public bool IsInProgress { get => this.isInProgress; set => SetProperty<bool>(ref this.isInProgress, value, nameof(IsInProgress)); }
+
+        public bool IsInProgress
+        {
+            get => this.isInProgress;
+            set => SetProperty<bool>(ref this.isInProgress, value, nameof(IsInProgress));
+        }
+
         public int Position
 
         {
             get => this.position;
             set => SetProperty<int>(ref this.position, value, nameof(Position));
         }
-        public bool UpFtp
-        {
-            get => upFtp;
-            set => SetProperty<bool>(ref upFtp, value, nameof(UpFtp));
-        }
+
+        public bool UpFtp { get => upFtp; set => SetProperty<bool>(ref upFtp, value, nameof(UpFtp)); }
     }
 }

@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="VigilantKJV.Views.BibleView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:chipgroup="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:expander="clr-namespace:Syncfusion.XForms.Expander;assembly=Syncfusion.Expander.XForms"
+    xmlns:helpers="clr-namespace:VigilantKJV.Helpers"
+    xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+    xmlns:listview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+    xmlns:local="clr-namespace:VigilantKJV.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:VigilantKJV.Models"
+    xmlns:picker="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
+    xmlns:sfButtons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+    xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+    xmlns:parallaxview="clr-namespace:Syncfusion.XForms.ParallaxView;assembly=Syncfusion.SfParallaxView.XForms"
+    mc:Ignorable="d"  
+    Title="{Binding Title}">
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding GoLast}"
+            Icon="lightbulb.ico"
+            Text="Last Rec.." />
+    </ContentPage.ToolbarItems>-->
+
+    <ContentPage.Content >
+        <RefreshView> <!--Everything up to list-->
+         
+        <parallaxview:SfParallaxView>
+                <parallaxview:SfParallaxView.Content>   <StackLayout >
+                <StackLayout>
+                <expander:SfExpander
+                    x:Name="Expander"
+                    Collapsed="Expander_Collapsed"
+                    Expanded="Expander_Expanded"
+                    IsExpanded="True">
+                    <expander:SfExpander.Header>
+                        <Label
+                            Margin="20,0,0,0"
+                            HorizontalOptions="Center"
+                            Text=" " />
+                    </expander:SfExpander.Header>
+                    <expander:SfExpander.Content>
+                        <!--pick testament, book chapter-->
+                        <StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                                <!--<Label Text="Testament" FontSize="15" VerticalOptions="Center" HorizontalOptions="Fill"></Label>-->
+                                <chipgroup:SfSegmentedControl
+                                    Color="{StaticResource PrimaryDark}"
+                                    BorderColor="{StaticResource PrimaryDark}"
+                                    CornerRadius="10" 
+                                    FontColor="{StaticResource PrimaryLight}"
+                                    HorizontalOptions="CenterAndExpand"
+                                    SegmentCornerRadius="10"
+                                    SegmentHeight="30"
+                                    SelectedIndex="{Binding TestamentInt}"
+                                    VisibleSegmentsCount="3">
+                                    <sfButtons:SfSegmentedControl.SelectionIndicatorSettings>
+                                        <sfButtons:SelectionIndicatorSettings Color="{StaticResource Segment_Selection}" CornerRadius="2" />
+                                    </sfButtons:SfSegmentedControl.SelectionIndicatorSettings>
+                                    <ListCollection:List x:TypeArguments="x:String">
+                                        <x:String>Old</x:String>
+                                        <x:String>New</x:String>
+                                        <x:String>Both</x:String>
+                                    </ListCollection:List>
+                                </chipgroup:SfSegmentedControl>
+                            </StackLayout>
+                            <!--BackgroundColor="{Binding PercentSlider, Converter={StaticResource gradient}}"-->
+                            <StackLayout x:Name="pickerStack" Orientation="Horizontal">
+                                <picker:SfPicker
+                                    BorderColor="{StaticResource PrimaryDark}"
+                                    x:Name="BookPicker"
+                                    Margin="0"
+                                    ColumnHeaderFontFamily="Comic Sans MS"
+                                    FlowDirection="RightToLeft"
+                                  BackgroundColor="{StaticResource PrimaryDark}"
+                                    SelectedItemFontSize="20" 
+                                 SelectedItemTextColor="{StaticResource PrimaryLight}"
+                                    SelectedItemFontAttribute="Bold"
+                                    ShowHeader="False"  
+                                    HeightRequest="60"
+                                    HorizontalOptions="FillAndExpand"
+                                    ItemsSource="{Binding  Books}"
+                                    SelectedItem="{Binding Book, Mode=TwoWay}"
+                               
+                                    UnSelectedItemFontSize="18"
+                                    VerticalOptions="FillAndExpand"
+                                    WidthRequest="150" />
+                                <picker:SfPicker
+                                    Margin="0" 
+                                    BackgroundColor="{StaticResource PrimaryDark}"
+                                    BorderColor="{StaticResource PrimaryDark}"
+                                    ColumnHeaderFontFamily="Comic Sans MS"
+                                    FlowDirection="RightToLeft" 
+                                    HeightRequest="60"
+                                    HorizontalOptions="FillAndExpand"
+                                    ItemsSource="{Binding Chapters}"
+                                    SelectedItem="{Binding Chapter, Mode=TwoWay}" 
+                                    SelectedItemFontSize="20" 
+                                 SelectedItemTextColor="{StaticResource PrimaryLight}"
+                                    SelectedItemFontAttribute="Bold"
+                                    ShowHeader="False" 
+                                    UnSelectedItemFontSize="18"
+                                    VerticalOptions="FillAndExpand"
+                                    WidthRequest="150"></picker:SfPicker>
+                            </StackLayout>
+                        </StackLayout>
+                    </expander:SfExpander.Content>
+                </expander:SfExpander>
+                <!--<StackLayout>
+                    <Label
+                        x:Name="lblSlider"
+                        Margin="0,10,10,10"
+                        FontFamily="Comic Sans MS"
+                        FontSize="Subtitle"
+                        HorizontalOptions="FillAndExpand"
+                        Text="{Binding TestamentLabel}"
+                        TextColor="{Binding PercentSlider, Converter={StaticResource gradient}}" />
+                    <Slider
+                        x:Name="tSlider"
+                        Value="{Binding SliderVal,Mode=TwoWay}"
+                        Maximum="{Binding MinS}"
+                        MaximumTrackColor ="{StaticResource LblColor1}"
+                        Minimum="{Binding MaxS}"
+                        MinimumTrackColor="{StaticResource LblColor2}"
+                        ThumbImageSource="Actions_Arrow4Down.png"
+                        ValueChanged="Slider_ValueChanged" />
+                    -->
+            </StackLayout>
+            <!--Main component list-->
+            <listview:SfListView
+                x:Name="verseListView"
+                BackgroundColor="{StaticResource PrimaryDark}"
+                IsBusy="{Binding IsBusy, Mode=TwoWay}"
+                QueryItemSize="verseListView_QueryItemSize"
+                SwipeEnded="verseListView_SwipeEnded"
+                SwipeStarted="verseListView_SwipeStarted"
+                AllowSwiping="True"
+                ItemHolding="verseListView_ItemHolding"
+                IsStickyFooter="true"
+                IsStickyHeader="true"
+                ItemsSource="{Binding Verses, Mode=TwoWay}"
+                ItemTapped="OnVerseTapped"
+                LoadMoreCommand="{Binding LoadItemsCommand}"
+                SelectedItem="{Binding Verse}">
+                <!--Header-->
+                <!--<syncfusion:SfListView.HeaderTemplate>
+                    <DataTemplate>
+                        <expander:SfExpander
+                            x:Name="ListHeaderExpander"
+                            BindingContext="{x:Reference Name=Expander}"
+                            IsExpanded="{Binding Path=IsExpanded),Converter={StaticResource inverter}}">
+                            <expander:SfExpander.Header>
+                                <Label
+                                    Margin="20,0,0,0"
+                                    HorizontalOptions="Center"
+                                    Text=" " />
+                            </expander:SfExpander.Header>
+                            <expander:SfExpander.Content>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label
+                                        HeightRequest="25"
+                                        HorizontalOptions="FillAndExpand"
+                                        Text="{Binding .Book.BookName}" />
+                                    <Label HorizontalOptions="FillAndExpand" Text="{Binding .Chapter.Number}" />
+                                </StackLayout>
+                            </expander:SfExpander.Content>
+                        </expander:SfExpander>
+                    </DataTemplate>
+                </syncfusion:SfListView.HeaderTemplate>-->
+                <syncfusion:SfListView.LayoutManager>
+                    <syncfusion:GridLayout SpanCount="1" />
+                </syncfusion:SfListView.LayoutManager>
+                <syncfusion:SfListView.ItemTemplate >
+                    <DataTemplate >
+                        <ViewCell Height="200">
+                                    <Frame Padding="1" SizeChanged="Frame_SizeChanged"  >
+                            <Grid Margin="1" BackgroundColor="{StaticResource PrimaryDark}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20" />
+                                    <RowDefinition Height="150" />
+                                </Grid.RowDefinitions>
+                                <Label
+                                    Margin="10,5,0,0"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    BackgroundColor="{StaticResource LabelVerse_HeaderBackground}"
+                                    VerticalOptions="Center"
+                                    FontFamily="Comic Sans MS"
+                                    FontSize="15"
+                                    Text="{Binding Number}"
+                                    TextColor="{StaticResource LabelVerse_HeaderText}" />
+                                <Label
+                                    Margin="10,5,0,0"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    BackgroundColor="{StaticResource LabelVerse_HeaderBackground}"
+                                    FontFamily="Comic Sans MS"
+                                    FontSize="15"
+                                    Text="{Binding TimeSinceRecited}"
+                                    TextColor="{StaticResource LabelVerse_HeaderText}" />
+                                        <!--Length-->
+                                        <Label
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Margin="4"
+                                    BackgroundColor="{Binding IsMemorized,Converter={StaticResource booltocolor}}"
+                                    FontFamily="Comic Sans MS"
+                                    FontSize="13"
+                                    Text="{Binding Text}"
+                                    TextColor="{StaticResource LabelVerse_Text}" />
+                                        </Grid>
+                                    </Frame>
+                                </ViewCell>
+                    </DataTemplate>
+                </syncfusion:SfListView.ItemTemplate>
+            </listview:SfListView>
+            <!--<ListView
+                x:Name="verseListView"
+                BackgroundColor="{StaticResource LabelVerse_Background}"
+                HasUnevenRows="True"
+                IsPullToRefreshEnabled="True"
+                IsRefreshing="{Binding IsBusy, Mode=TwoWay}"
+                ItemsSource="{Binding Verses, Mode=TwoWay}"
+                ItemTapped="OnVerseTapped"
+                RefreshCommand="{Binding LoadItemsCommand}"
+                SelectedItem="{Binding Verse}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Margin="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Label
+                                    Grid.Row="0"
+                                    Margin="4"
+                                    FontAttributes="Bold"
+                                    FontFamily="Comic Sans MS"
+                                    FontSize="Large"
+                                    Text="{Binding FullTitle}" />
+                                <StackLayout
+                                    Grid.Row="1"
+                                    Margin="4"
+                                    Orientation="Horizontal"
+                                    Padding="2">
+                                    <Label
+                                        BackgroundColor="{Binding IsMemorized,Converter={StaticResource booltocolor}}"
+                                        FontFamily="Comic Sans MS"
+                                        FontSize="Medium"
+                                        Text="{Binding Text}" />
+                                    <Label
+                                        FontFamily="Comic Sans MS"
+                                        FontSize="Small"
+                                        Text="{Binding TimeSinceRecited}" />
+                                </StackLayout>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>-->
+                    </StackLayout>
+                </parallaxview:SfParallaxView.Content>
+            </parallaxview:SfParallaxView>
+            </RefreshView>
+    </ContentPage.Content>
+
+</ContentPage>

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using VigilantKJV.DataAccess;
 using VigilantKJV.Models;
 using VigilantKJV.Services;
 
@@ -12,77 +15,147 @@ namespace VigilantKJV.ViewModels
 {
     public class VerseViewModel : BaseViewModel
     {
-        public DataAccess.DataStore DBAccess { get; set; }
-
-        private Verse _verse;
-        private Guid verseId;
-        private bool isMemorized;
+        DataAccess.DataStore db;
+        private Verse verse;
+        private int verseId;
         DateTime? previous;
-         
-        public VerseViewModel(Verse verse,DataAccess.DataStore DBAccess  )
-        {   this.DBAccess = DBAccess;
+        private DateTime lastRecited;
+        public VerseViewModel(Verse verse)
+        {
+            db = DataStoreFactory.GetNewDataContext();
+            isLoading = true;
             Title = verse.FullTitle;
             verseId = verse.Id;
             previous = null;
-            this._verse = verse;
+            this.verse = verse;
+            IsMemorized = verse.IsMemorized;
+            isLoading = false;
+            this.PropertyChanged += OnPropertyChanged;
         }
+        bool isLoading = false;
+        bool isMemorized;
         public bool IsMemorized
         {
             get
             {
                 return isMemorized;
             }
+
             set
             {
-                SetMemorized();
-                SetProperty(ref isMemorized, value);
+                if (isMemorized == value)
+                {
+                    return;
+                }
+                isMemorized = value;
+                SetProperty(ref this.isMemorized, value);
             }
         }
-        internal async Task<bool> SetMemorized()
+
+
+        internal async Task<bool> SetMemorized(bool value)
         {
             IsBusy = true;
-
+            if (isLoading)
+                return true;
             try
             {
-                var v = await DBAccess.DB.Verse.FindAsync(verseId);
-                v.IsMemorized = !v.IsMemorized;
-                DBAccess.DB.Update(v);
-               return 1== await DBAccess.DB.SaveChangesAsync();
+                db.Update(verse);
+                verse.IsMemorized = IsMemorized = value;
+                var ret = await db.SaveChangesAsync();
+
+                SetProperty(ref this.isMemorized, value, nameof(IsMemorized));
+                return ret > 0;
             }
             catch (Exception ex)
             {
                 Acr.UserDialogs.UserDialogs.Instance.Alert($"There was an error:\n{ex}");
             }
             IsBusy = false;
-                                     return false;
+            return false;
         }
-        public string sLastRecited => _verse?.LastRecited.ToShortDateString();
+        public string sLastRecited => verse?.LastRecited.ToShortDateString();
 
-        public string VerseName { get { return _verse.ChapVerseText; } }
+        public string VerseName { get { return verse.ChapVerseText; } }
         //    public int TypeID { get { return _verse.IdTypeID; } }
-        internal async Task UpdateRecited(Verse item)
+        internal async Task<bool> UpdateRecited()
         {
-            IsBusy = true;
+            if (isLoading)
+                return false;
+            try
+            {
+                var temp = verse.LastRecited;
+                db.Update(verse);
+                verse.LastRecited = DateTime.Now.ToLocalTime();
 
-            var v = item ?? await DBAccess.DB.Verse.FindAsync(verseId);
-            previous = v.LastRecited;
-            await DBAccess.UpdateRecited(v.Id,null);
-            IsBusy = false;
+                var ret = await db.SaveChangesAsync() > 0;
+                if (ret)
+                {
+                    previous = temp;
+                    SetProperty(ref this.lastRecited, verse.LastRecited, nameof(LastRecited));
+                }
+                return ret;
+            }
+            catch (Exception ex)
+            {
+
+                Acr.UserDialogs.UserDialogs.Instance.Alert($"{ex}");
+                Console.WriteLine($"{ex}");
+            }
+            return false;
         }
-        internal async Task UpdateRecitedUndo(Verse item)
+        public string LastRecitedCaption
         {
+            get => verse.LastRecitedCaption;
+        }
+        internal async Task<bool> UpdateRecitedUndo()
+        {
+            if (isLoading)
+                return false;
             IsBusy = true;
+            try
+            {
 
-            var v = item ?? await DBAccess.DB.Verse.FindAsync(verseId);
-            var temp = v.LastRecited;
-            await DBAccess.UpdateRecited(v.Id, previous);
-            previous = temp;
-            IsBusy = false;
+                db.Update(verse);
+                verse.LastRecited = previous.Value;
+
+                var ret = await db.SaveChangesAsync() > 0;
+                if (ret)
+                {
+                    SetProperty(ref this.lastRecited, verse.LastRecited, nameof(LastRecited));
+                }
+                return ret;
+            }
+            catch (Exception ex)
+            {
+
+                Acr.UserDialogs.UserDialogs.Instance.Alert($"{ex}");
+                Console.WriteLine($"{ex}");
+            }
+            return false;
+        }
+        void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+
         }
         public Verse Verse
         {
-            get => _verse;
-            set=>SetProperty(ref _verse, value,nameof(this.Verse));
+            get => verse;
+            set => SetProperty(ref verse, value, nameof(this.Verse));
+        }
+        public DateTime LastRecited
+        {
+            get { return lastRecited; }
+            set
+            {
+                if (lastRecited == value)
+                {
+                    return;
+                }
+
+                lastRecited = value;
+                SetProperty(ref this.lastRecited, value, nameof(LastRecited));
+            }
         }
     }
 }

@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="VigilantKJV.Views.DbToolsView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+xmlns:progressBar="clr-namespace:Syncfusion.XForms.ProgressBar;assembly=Syncfusion.SfProgressBar.XForms"
+ 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:behaviors="clr-namespace:VigilantKJV.Behaviors"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:services="clr-namespace:VigilantKJV.Services"
+
+    mc:Ignorable="d"
+    Title="{Binding Title}">
+
+    <!--<ContentPage.IconImageSource>
+        <FileImageSource File="process_accept.ico" />
+    </ContentPage.IconImageSource>
+
+    <ContentPage.BackgroundImageSource>
+        <ImageSource>words.png</ImageSource>
+    </ContentPage.BackgroundImageSource>-->
+
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid  >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+              
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Path to export to." />
+                <Entry
+                    x:Name="EntryExp"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    HorizontalOptions="FillAndExpand"
+                    Placeholder="/storage/9C33-6BBD/temp/" 
+                    Text="{Binding ExportPath}" />
+                <!-- TextChanged="EntryExp_TextChanged"-->
+                <StackLayout
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Orientation="Horizontal">
+                    <Button
+                        Clicked="ExportDB_Clicked"
+                        HorizontalOptions="FillAndExpand"
+                        Text="Export DB to file" />
+                    <Label
+                        HorizontalOptions="CenterAndExpand"
+                        Text="FTP?"
+                        VerticalOptions="CenterAndExpand" />
+                    <CheckBox
+                        x:Name="cbFtp"
+                        HorizontalOptions="CenterAndExpand"
+                        IsChecked="{Binding UpFtp}" />
+                    <!--  CheckedChanged="cbFtp_CheckedChanged"-->
+                </StackLayout>
+                <!--<Image Source="kjv.jpg" Aspect="AspectFill" ></Image>-->
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Path to import from." />
+                <Entry
+                    x:Name="EntryImp"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    HorizontalOptions="FillAndExpand"
+                    Placeholder="/storage/9C33-6BBD/temp/db.txt" 
+                    Text="{Binding ImportPath}"  />
+                <StackLayout
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    HeightRequest="75"
+                    Orientation="Horizontal" 
+                    VerticalOptions="StartAndExpand">
+                    <Button
+                        BorderColor="{StaticResource Button_Border3}"
+                        BorderWidth="2"
+                        Clicked="ImportDB_Clicked"
+                        HorizontalOptions="FillAndExpand"
+                        IsEnabled="{Binding IsInProgress, Converter={StaticResource inverter}}"
+                        Text="Import DB file"
+                        VerticalOptions="FillAndExpand" />
+                    <Button
+                        BorderColor="{StaticResource Button_Border3}"
+                        BorderWidth="2"
+                        Clicked="ImportDBOrig_Clicked"
+                        HorizontalOptions="FillAndExpand"
+                        IsEnabled="{Binding IsInProgress, Converter={StaticResource inverter}}"
+                        Text="Import from CSV"
+                        VerticalOptions="FillAndExpand">
+                        <Button.Behaviors>
+                            <behaviors:LongPressBehavior LongPressed="MyButton_LongPressed" />
+                        </Button.Behaviors>
+                    </Button>
+                    <Button
+                        BorderColor="{StaticResource Button_Border3}"
+                        BorderWidth="2"
+                        Clicked="ClearDB_Clicked"
+                        HorizontalOptions="FillAndExpand"
+                        IsEnabled="{Binding IsInProgress, Converter={StaticResource inverter}}"
+                        Text="Clear DB"
+                        VerticalOptions="FillAndExpand" />
+                </StackLayout>
+                <Editor
+                    x:Name="SqlEditor"
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3" 
+                    Text="{Binding SqlEditorText}" />
+                <StackLayout Grid.Row="5" Orientation="Horizontal"
+                    Grid.Column="0" Grid.ColumnSpan="3"
+                   >
+                    <Label 
+                    FontSize="Medium"
+                    HorizontalOptions="EndAndExpand"
+                    HorizontalTextAlignment="Center"
+                    Text="~~Run file or Text ~~" 
+                    VerticalTextAlignment="Start" />
+                    <Switch
+                    x:Name="toggleSql"
+                     HorizontalOptions="Center"
+                    IsToggled="{Binding IsSqlFiles, Mode=TwoWay}"
+                    OnColor="LightSeaGreen" 
+                    VerticalOptions="Center" />
+                    <Label 
+                    FontSize="Medium"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Text="~~ Break apart .sql~~" 
+                    VerticalOptions="Start"
+                    VerticalTextAlignment="Center" />
+                    <CheckBox
+                    x:Name="chkBreak"  
+                    HorizontalOptions="Center"
+                    IsChecked="{Binding BreakSqlIntoChunks}"
+                    VerticalOptions="Center" />
+                </StackLayout>
+                <Picker
+                    Grid.Row="6"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"                 
+                    SelectedIndex="0"
+                    SelectedItem="{Binding SqlFilePick, Mode=TwoWay}"                    
+                    Title="Pick File">
+                    <Picker.Items>
+                        <x:String>Books.sql</x:String>
+                        <x:String>Chapters.sql</x:String>
+                        <x:String>Tables.sql</x:String>
+                        <x:String>View.sql</x:String>
+                        <x:String>Verses.sql</x:String>
+                        <x:String>SetLastRecited.sql</x:String>
+                        <x:String>SetMemorized.sql</x:String>
+                        <x:String>Delete.sql</x:String>
+                    </Picker.Items>
+                </Picker>
+                <progressBar:SfLinearProgressBar  x:Name="pbar"
+                    Grid.Row="7"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    HeightRequest="40"
+                    IsVisible="{Binding IsInProgress}"
+                    ProgressColor="{StaticResource ProgressAndHighlightColor}"
+                    VerticalOptions="Start" ></progressBar:SfLinearProgressBar>
+                <!--<ProgressBar
+                    x:Name="pbar"
+                    Grid.Row="7"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    HeightRequest="40"
+                    IsVisible="{Binding IsInProgress}"
+                    ProgressColor="{StaticResource ProgressAndHighlightColor}"
+                    VerticalOptions="Start" />-->
+                <Label Margin="30,0,0,0"
+                    x:Name="lblpbar"
+                    Grid.Row="7"
+                    Grid.Column="0"
+                    VerticalOptions="End" />
+                <Button
+                    x:Name="btnSql"
+                    Grid.Row="8"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3" 
+                    BorderColor="{StaticResource Button_Border2}"
+                    BorderWidth="2"
+                    Clicked="btnSql_Clicked"
+                    Command="{Binding DatabaseActivityCommand} "
+                    IsEnabled="{Binding Source={x:Reference pbar},Path=IsVisible, 
+                    Converter={StaticResource inverter}}"
+                    Text="Execute Sql"
+                    />
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+
+</ContentPage>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VigilantKJV.Models;
 
-namespace Migrator.Migrations
+namespace VigilantKJV.Migrations
 {
     [DbContext(typeof(MyKjvContext))]
     [Migration("20200809004521_ChangeTestament")]
